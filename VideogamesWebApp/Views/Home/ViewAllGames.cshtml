@@ -1,16 +1,15 @@
-﻿@model List<VideogamesWebApp.Models.GameViewModel>
-
-<div class="container mt-4">
+﻿<div class="container mt-4">
     <h1>All Games</h1>
 
-    <div class="mb-3">
-        <button onclick="window.location.href='@Url.Action("Index", "Games")'" class="btn btn-outline-primary">
+    <div class="mb-3 d-flex justify-content-center">
+        <button onclick="window.location.href='@Url.Action("Index", "Games")'" class="btn btn-outline-primary mx-2">
             Back to Library
         </button>
-        <button type="button" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#addGameModal">
+        <button type="button" class="btn btn-primary mx-2" data-bs-toggle="modal" data-bs-target="#addGameModal">
             Add New Game
         </button>
     </div>
+
     @if (TempData["ErrorMessage"] != null)
     {
         <div class="alert alert-danger" role="alert">
@@ -36,9 +35,9 @@
                 </tr>
             }
         </tbody>
-
     </table>
 </div>
+
 <!-- Modal for Adding New Game -->
 <div class="modal fade" id="addGameModal" tabindex="-1" aria-labelledby="addGameModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -67,3 +66,4 @@
         </div>
     </div>
 </div>
+
