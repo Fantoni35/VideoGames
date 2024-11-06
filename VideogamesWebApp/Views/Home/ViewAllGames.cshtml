@@ -1,4 +1,23 @@
-﻿<div class="container mt-4">
+﻿@model List<VideogamesWebApp.Models.GameViewModel>
+
+<style>
+    .gradient-btn {
+        background: linear-gradient(45deg, #0d6efd, #0dcaf0);
+        border: none;
+        color: white;
+        transition: all 0.3s ease;
+    }
+
+        .gradient-btn:hover {
+            background: linear-gradient(45deg, #0099ff, #00d4ff);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+</style>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+<div class="container mt-4">
     <h1>All Games</h1>
 
     <div class="mb-3 d-flex justify-content-center">
@@ -22,7 +41,8 @@
             <tr>
                 <th scope="col">Game Name</th>
                 <th scope="col">Description</th>
-                <th scope="col">Dlc</th>
+                <th scope="col">Main Game</th>
+                <th scope="col">List of DLC:</th>
             </tr>
         </thead>
         <tbody>
@@ -31,13 +51,58 @@
                 <tr>
                     <td><strong>@game.GameName</strong></td>
                     <td>@game.GameDescription</td>
-                    <td>@(string.IsNullOrEmpty(game.MainGameId) ? "-" : game.MainGameId)</td>
+                    <td>@(game.MainGameId.HasValue ? game.MainGameName : "-")</td>
+                    <td>
+                        @{
+                            bool hasDLCs = Model.Any(g => g.MainGameId == game.GameId);
+                        }
+                        @if (hasDLCs)
+                        {
+                            <button class="btn gradient-btn btn-sm"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#dlcModal"
+                                    onclick="loadDLCs('@game.GameId', '@game.GameName')"
+                                    title="View DLCs">
+                                View DLCs
+                            </button>
+                        }
+                    </td>
                 </tr>
             }
         </tbody>
     </table>
-</div>
 
+    <!-- Pagination controls -->
+    <nav>
+        <ul class="pagination justify-content-center">
+            @{
+                var currentPage = (int)ViewData["CurrentPage"];
+                var totalPages = (int)ViewData["TotalPages"];
+
+                if (currentPage > 1)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("ViewAllGames", new { pageNumber = currentPage - 1 })">Previous</a>
+                    </li>
+                }
+
+                for (int i = 1; i <= totalPages; i++)
+                {
+                    <li class="page-item @(i == currentPage ? "active" : "")">
+                        <a class="page-link" href="@Url.Action("ViewAllGames", new { pageNumber = i })">@i</a>
+                    </li>
+                }
+
+                if (currentPage < totalPages)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("ViewAllGames", new { pageNumber = currentPage + 1 })">Next</a>
+                    </li>
+                }
+            }
+        </ul>
+    </nav>
+</div>
 <!-- Modal for Adding New Game -->
 <div class="modal fade" id="addGameModal" tabindex="-1" aria-labelledby="addGameModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -57,8 +122,14 @@
                         <textarea class="form-control" id="gameDescription" name="GameDescription" required></textarea>
                     </div>
                     <div class="mb-3">
-                        <label for="mainGameId" class="form-label">DLC (if any)</label>
-                        <input type="text" class="form-control" id="mainGameId" name="MainGameId">
+                        <label for="mainGameId" class="form-label">Main Game (optional)</label>
+                        <select class="form-select" id="mainGameId" name="MainGameId">
+                            <option value="">Select a main game (optional)</option>
+                            @foreach (var game in ViewBag.MainGames)
+                            {
+                                <option value="@game.GameId">@game.GameName</option>
+                            }
+                        </select>
                     </div>
                     <button type="submit" class="btn btn-primary">Add Game</button>
                 </form>
@@ -66,4 +137,58 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="dlcModal" tabindex="-1" aria-labelledby="dlcModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="dlcModalLabel">
+                    <span id="mainGameTitle"></span>
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <ul id="dlcList" class="list-group list-group-flush"></ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function loadDLCs(mainGameId, gameName) {
+        document.getElementById("mainGameTitle").textContent = `DLCs for ${gameName}`;
+
+        fetch(`/Games/GetDLCs?mainGameId=${mainGameId}`)
+            .then(response => response.json())
+            .then(dlcList => {
+                const dlcListElement = document.getElementById("dlcList");
+                dlcListElement.innerHTML = "";
+                if (dlcList.length === 0) {
+                    const listItem = document.createElement("li");
+                    listItem.className = "list-group-item text-muted";
+                    listItem.textContent = "No DLCs found for this game.";
+                    dlcListElement.appendChild(listItem);
+                } else {
+                    dlcList.forEach(dlc => {
+                        const listItem = document.createElement("li");
+                        listItem.className = "list-group-item";
+                        listItem.innerHTML = `
+                                        <i class="fas fa-gamepad me-2 text-primary"></i>
+                                        <strong>${dlc.gameName}</strong>
+                                    `;
+                        dlcListElement.appendChild(listItem);
+                    });
+                }
+            })
+            .catch(error => console.error('Error fetching DLCs:', error));
+    }
+</script>
+
+
+
+
+
+
 

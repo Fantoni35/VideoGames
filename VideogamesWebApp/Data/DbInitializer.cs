@@ -17,88 +17,126 @@ public static class DbInitializer
                     GameId = 1,
                     GameName = "Grand Theft Auto V",
                     GameDescription = "An open-world game",
-                    MainGameId = "Gta online"
-
+                    MainGameId = null
+                },
+                 new Game
+                {
+                    GameId = 2,
+                    GameName = "Gta Online",
+                    GameDescription = "An open-world game",
+                    MainGameId = 1
                 },
 
                 new Game
                 {
-                    GameId = 2,
+                    GameId = 3,
                     GameName = "Formula 1",
                     GameDescription = "A car game.",
                     MainGameId = null
                 },
                 new Game
                 {
-                    GameId = 3,
+                    GameId = 4,
                     GameName = "Call Of Duty",
                     GameDescription = "Shooter game",
-                    MainGameId = "Awakeing"
-
+                    MainGameId = null
+                },
+                  new Game
+                {
+                    GameId = 5,
+                    GameName = "Awakeing",
+                    GameDescription = "Shooter game",
+                    MainGameId = 4
+                },
+                   new Game
+                {
+                    GameId = 6,
+                    GameName = "Splash",
+                    GameDescription = "Shooter game",
+                    MainGameId = 4
                 },
                 new Game
                 {
-                    GameId = 4,
+                    GameId = 7,
                     GameName = "Fifa",
                     GameDescription = "football game",
                     MainGameId = null
-
-                },
-                new Game
-                {
-                   GameId = 5,
-                   GameName = "Battlefield",
-                   GameDescription = "war game",
-                   MainGameId = null
-
-                },
-                new Game
-                {
-                   GameId = 6,
-                   GameName = "Just dance",
-                   GameDescription = "Dance music",
-                   MainGameId = "More songs"
-
-                },
-                new Game
-                {
-                   GameId = 7,
-                   GameName = "League of Legends",
-                   GameDescription = "Lol",
-                   MainGameId = "More champions"
                 },
                 new Game
                 {
                    GameId = 8,
-                   GameName = "Valorant",
+                   GameName = "Battlefield",
                    GameDescription = "war game",
                    MainGameId = null
-
                 },
                 new Game
                 {
                    GameId = 9,
-                   GameName = "Minecraft",
-                   GameDescription = "cube game",
+                   GameName = "Just dance",
+                   GameDescription = "Dance music",
                    MainGameId = null
-
+                },
+                 new Game
+                {
+                   GameId = 10,
+                   GameName = "Just dance New song",
+                   GameDescription = "Dance music",
+                   MainGameId = 9
                 },
                 new Game
                 {
-                   GameId = 10,
+                   GameId = 11,
+                   GameName = "Elden Ring",
+                   GameDescription = "RPG game",
+                   MainGameId = null
+                },
+                  new Game
+                {
+                   GameId = 12,
+                   GameName = "Elden Ring Shadow of The Erdtree",
+                   GameDescription = "RPG game",
+                   MainGameId = 11
+                },
+                new Game
+                {
+                   GameId = 13,
+                   GameName = "Valorant",
+                   GameDescription = "war game",
+                   MainGameId = null
+                },
+                new Game
+                {
+                   GameId = 14,
+                   GameName = "Minecraft",
+                   GameDescription = "cube game",
+                   MainGameId = null
+                },
+                new Game
+                {
+                   GameId = 15,
                    GameName = "Rocket League",
                    GameDescription = "car football game",
-                   MainGameId = "More car"
-
+                   MainGameId = null
                 },
-
-
+                new Game
+                {
+                   GameId = 16,
+                   GameName = "Dragon Ball Z: Kakarot",
+                   GameDescription = "Anime Game",
+                   MainGameId = null
+                },
+                 new Game
+                {
+                   GameId = 17,
+                   GameName = "Dragon Ball Z: Kakarot A New Power",
+                   GameDescription = "Anime Game",
+                   MainGameId = 16
+                },
             };
 
             context.Games.AddRange(games);
         }
 
-       
         if (!context.Stores.Any())
         {
             var stores = new Stores[]
@@ -223,15 +261,9 @@ public static class DbInitializer
             };
             context.Launchers.AddRange(launchers);
         }
-
-
-
         context.SaveChanges();
     }
 }
-
-
-
 
 
 

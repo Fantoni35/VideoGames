@@ -17,12 +17,13 @@ public class GamesController : Controller
         var userId = GetUserId();
         var username = GetUsername();
 
-
         var transactionsQuery = from transaction in _dbContext.GameTransactions
                                 join game in _dbContext.Games on transaction.GameId equals game.GameId
                                 join store in _dbContext.Stores on transaction.StoreId equals store.StoreId
                                 join platform in _dbContext.Platforms on transaction.PlatformId equals platform.PlatformId
                                 join launcher in _dbContext.Launchers on transaction.LauncherId equals launcher.LauncherId
+                                join mainGame in _dbContext.Games on game.MainGameId equals mainGame.GameId into mainGames
+                                from mainGame in mainGames.DefaultIfEmpty() // Left join
                                 where transaction.UserId == userId
                                 select new GameTransactionsViewModel
                                 {
@@ -35,33 +36,32 @@ public class GamesController : Controller
                                     StoreName = store.StoreName,
                                     PlatformName = platform.PlatformName,
                                     LauncherName = launcher.LauncherName,
-                                    MainGameId = game.MainGameId
+                                    MainGameId = game.MainGameId,
+                                    MainGameName = mainGame != null ? mainGame.GameName : null
                                 };
 
         if (!string.IsNullOrWhiteSpace(searchQuery))
         {
-            searchQuery = searchQuery.ToLower();
             transactionsQuery = transactionsQuery.Where(t =>
-                t.GameName.ToLower().Contains(searchQuery) ||
-                t.StoreName.ToLower().Contains(searchQuery) ||
-                t.PlatformName.ToLower().Contains(searchQuery) ||
-                t.LauncherName.ToLower().Contains(searchQuery) ||
-                (t.MainGameId != null && t.MainGameId.ToLower().Contains(searchQuery))
+                t.GameName.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                t.StoreName.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                t.PlatformName.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                t.LauncherName.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                (t.MainGameName != null && t.MainGameName.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
             );
         }
 
         var transactions = transactionsQuery.ToList();
         ViewData["Username"] = username;
-
         ViewData["searchQuery"] = searchQuery;
 
         ViewData["AvailableGames"] = _dbContext.Games
-                                      .Select(g => new { g.GameId, g.GameName })
-                                      .ToList();
+                                    .Select(g => new { g.GameId, g.GameName })
+                                    .ToList();
 
         ViewData["AvailableStores"] = _dbContext.Stores
-                                         .Select(s => new { s.StoreId, s.StoreName })
-                                         .ToList();
+                                     .Select(s => new { s.StoreId, s.StoreName })
+                                     .ToList();
         ViewData["AvailablePlatforms"] = _dbContext.Platforms
                                                    .Select(p => new { p.PlatformId, p.PlatformName })
                                                    .ToList();
@@ -71,6 +71,9 @@ public class GamesController : Controller
 
         return View("~/Views/Home/Index.cshtml", transactions);
     }
+
+
+
 
     [HttpPost]
     public IActionResult BuyGame(GamePurchaseViewModel model)
@@ -102,23 +105,43 @@ public class GamesController : Controller
     }
 
 
-    public IActionResult ViewAllGames()
+    public IActionResult ViewAllGames(int pageNumber = 1)
     {
+        int pageSize = 10; // Number of games per page
         var username = GetUsername();
 
-        var allGamesQuery = from game in _dbContext.Games
-                            select new GameViewModel
-                            {
-                                GameId = game.GameId,
-                                GameName = game.GameName,
-                                GameDescription = game.GameDescription,
-                                MainGameId = game.MainGameId
-                            };
+        // Query with pagination
+        var allGamesQuery = _dbContext.Games
+                                .Include(g => g.MainGame)
+                                .Select(game => new GameViewModel
+                                {
+                                    GameId = game.GameId,
+                                    GameName = game.GameName,
+                                    GameDescription = game.GameDescription,
+                                    MainGameId = game.MainGameId,
+                                    MainGameName = game.MainGame != null ? game.MainGame.GameName : null
+                                });
 
-        var allGames = allGamesQuery.ToList();
+        var mainGames = _dbContext.Games
+        .Where(g => g.MainGameId == null)
+        .Select(g => new { g.GameId, g.GameName })
+        .ToList();
+
+        ViewBag.MainGames = mainGames;
+
+        int totalGames = allGamesQuery.Count();
+        var paginatedGames = allGamesQuery
+                                .Skip((pageNumber - 1) * pageSize)
+                                .Take(pageSize)
+                                .ToList();
+
         ViewData["Username"] = username;
-        return View("~/Views/Home/ViewAllGames.cshtml", allGames);
+        ViewData["TotalPages"] = (int)Math.Ceiling((double)totalGames / pageSize);
+        ViewData["CurrentPage"] = pageNumber;
+
+        return View("~/Views/Home/ViewAllGames.cshtml", paginatedGames);
     }
+
 
     private string GetUsername()
     {
@@ -131,18 +154,18 @@ public class GamesController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddGame(string gameName, string gameDescription, string mainGameId)
+    public async Task<IActionResult> AddGame(string gameName, string gameDescription, int? mainGameId)
     {
         if (!string.IsNullOrWhiteSpace(gameName) && !string.IsNullOrWhiteSpace(gameDescription))
         {
             var existingGame = _dbContext.Games
                 .FirstOrDefault(g => g.GameName.ToLower() == gameName.ToLower() &&
                                      g.GameDescription.ToLower() == gameDescription.ToLower() &&
-                                     (g.MainGameId ?? "").ToLower() == (mainGameId ?? "").ToLower());
+                                     g.MainGameId == mainGameId);
 
             if (existingGame != null)
             {
-                TempData["ErrorMessage"] = "A game with the same name, description, and DLC already exists. Please enter different details.";
+                TempData["ErrorMessage"] = "A game with the same name, description, and main game already exists. Please enter different details.";
                 return RedirectToAction("ViewAllGames");
             }
 
@@ -150,9 +173,8 @@ public class GamesController : Controller
             {
                 GameName = gameName,
                 GameDescription = gameDescription,
-                MainGameId = string.IsNullOrWhiteSpace(mainGameId) ? null : mainGameId
+                MainGameId = mainGameId
             };
-
             _dbContext.Games.Add(game);
             await _dbContext.SaveChangesAsync();
 
@@ -163,21 +185,17 @@ public class GamesController : Controller
         return RedirectToAction("ViewAllGames");
     }
 
-
     [HttpPost]
     public IActionResult AddStore(string storeName, string storeDescription, string storeLink)
     {
         if (!string.IsNullOrWhiteSpace(storeName))
         {
-            
             var existingStore = _dbContext.Stores.FirstOrDefault(s => s.StoreName == storeName);
             if (existingStore != null)
             {
-                TempData["ErrorMessage"] = "Store with this name already exists. Please enter a different name.";
-                return RedirectToAction("Index");
+                return Json(new { success = false, message = "Store with this name already exists. Please enter a different name." });
             }
 
-            
             var newStore = new Stores
             {
                 StoreName = storeName,
@@ -187,51 +205,12 @@ public class GamesController : Controller
 
             _dbContext.Stores.Add(newStore);
             _dbContext.SaveChanges();
-            TempData["SuccessMessage"] = "Store created successfully";
-        }
-        else
-        {
-            TempData["ErrorMessage"] = "Store name cannot be empty.";
+            return Json(new { success = true, storeId = newStore.StoreId, storeName = newStore.StoreName });
         }
 
-        return RedirectToAction("Index");
+        return Json(new { success = false, message = "Store name cannot be empty." });
     }
 
-
-
-    [HttpPost]
-    public IActionResult AddPlatform(string platformName, string platformDescription)
-    {
-        if (!string.IsNullOrWhiteSpace(platformName))
-        {
-            
-            var existingPlatform = _dbContext.Platforms
-                .FirstOrDefault(p => p.PlatformName.ToLower() == platformName.ToLower());
-
-            if (existingPlatform != null)
-            {
-                TempData["ErrorMessage"] = "A platform with this name already exists. Please enter a different name.";
-                return RedirectToAction("Index");
-            }
-
-           
-            var newPlatform = new Platforms
-            {
-                PlatformName = platformName,
-                PlatformDescription = platformDescription
-            };
-
-            _dbContext.Platforms.Add(newPlatform);
-            _dbContext.SaveChanges();
-            TempData["SuccessMessage"] = "Platform created successfully.";
-        }
-        else
-        {
-            TempData["ErrorMessage"] = "Platform name cannot be empty.";
-        }
-
-        return RedirectToAction("Index");
-    }
 
 
     [HttpPost]
@@ -239,17 +218,14 @@ public class GamesController : Controller
     {
         if (!string.IsNullOrWhiteSpace(launcherName))
         {
-            
             var existingLauncher = _dbContext.Launchers
                 .FirstOrDefault(l => l.LauncherName.ToLower() == launcherName.ToLower());
 
             if (existingLauncher != null)
             {
-                TempData["ErrorMessage"] = "A launcher with this name already exists. Please enter a different name.";
-                return RedirectToAction("Index");
+                return Json(new { success = false, message = "A launcher with this name already exists. Please enter a different name." });
             }
 
-            
             var newLauncher = new Launcher
             {
                 LauncherName = launcherName,
@@ -259,16 +235,38 @@ public class GamesController : Controller
 
             _dbContext.Launchers.Add(newLauncher);
             _dbContext.SaveChanges();
-            TempData["SuccessMessage"] = "Launcher created successfully.";
-        }
-        else
-        {
-            TempData["ErrorMessage"] = "Launcher name cannot be empty.";
+            return Json(new { success = true, launcherId = newLauncher.LauncherId, launcherName = newLauncher.LauncherName });
         }
 
-        return RedirectToAction("Index");
+        return Json(new { success = false, message = "Launcher name cannot be empty." });
     }
 
+    [HttpPost]
+    public IActionResult AddPlatform(string platformName, string platformDescription)
+    {
+        if (!string.IsNullOrWhiteSpace(platformName))
+        {
+            var existingPlatform = _dbContext.Platforms
+                .FirstOrDefault(p => p.PlatformName.ToLower() == platformName.ToLower());
+
+            if (existingPlatform != null)
+            {
+                return Json(new { success = false, message = "A platform with this name already exists. Please enter a different name." });
+            }
+
+            var newPlatform = new Platforms
+            {
+                PlatformName = platformName,
+                PlatformDescription = platformDescription
+            };
+
+            _dbContext.Platforms.Add(newPlatform);
+            _dbContext.SaveChanges();
+            return Json(new { success = true, platformId = newPlatform.PlatformId, platformName = newPlatform.PlatformName });
+        }
+
+        return Json(new { success = false, message = "Platform name cannot be empty." });
+    }
 
     [HttpPost]
     public IActionResult DeleteGame(int transactionId)
@@ -287,6 +285,9 @@ public class GamesController : Controller
         TempData["SuccessMessage"] = "Game deleted successfully.";
         return RedirectToAction("Index");
     }
+
+
+
 
     [HttpGet]
     public IActionResult SearchGames(string query)
@@ -358,6 +359,16 @@ public class GamesController : Controller
 
         return Json(launchers);
     }
+    [HttpGet]
+    public IActionResult GetDLCs(int mainGameId)
+    {
+        var dlcs = _dbContext.Games
+                    .Where(g => g.MainGameId == mainGameId)
+                    .Select(g => new { g.GameId, g.GameName })
+                    .ToList();
+        return Json(dlcs);
+    }
+
 
 
 }

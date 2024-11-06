@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace VideogamesWebApp.Migrations
 {
     /// <inheritdoc />
-    public partial class createdatabase : Migration
+    public partial class createDatabase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -19,11 +19,16 @@ namespace VideogamesWebApp.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     GameName = table.Column<string>(type: "TEXT", maxLength: 25, nullable: false),
                     GameDescription = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
-                    MainGameId = table.Column<string>(type: "TEXT", maxLength: 30, nullable: true)
+                    MainGameId = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Games", x => x.GameId);
+                    table.ForeignKey(
+                        name: "FK_Games_Games_MainGameId",
+                        column: x => x.MainGameId,
+                        principalTable: "Games",
+                        principalColumn: "GameId");
                 });
 
             migrationBuilder.CreateTable(
@@ -128,6 +133,11 @@ namespace VideogamesWebApp.Migrations
                         principalColumn: "StoreId",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Games_MainGameId",
+                table: "Games",
+                column: "MainGameId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_GameTransactions_GameId",

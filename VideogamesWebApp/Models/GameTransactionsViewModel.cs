@@ -14,7 +14,8 @@ public class GameTransactionsViewModel
     public string StoreName { get; set; }
     public string PlatformName { get; set; }
     public string LauncherName { get; set; }
-    public string? MainGameId { get; set; }
-
+    public int? MainGameId { get; set; }
+    public string MainGameName { get; set; }
 
 }
+

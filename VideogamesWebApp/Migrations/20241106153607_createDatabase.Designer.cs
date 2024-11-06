@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace VideogamesWebApp.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20241104154457_createdatabase")]
-    partial class createdatabase
+    [Migration("20241106153607_createDatabase")]
+    partial class createDatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -36,11 +36,12 @@ namespace VideogamesWebApp.Migrations
                         .HasMaxLength(25)
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("MainGameId")
-                        .HasMaxLength(30)
-                        .HasColumnType("TEXT");
+                    b.Property<int?>("MainGameId")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("GameId");
+
+                    b.HasIndex("MainGameId");
 
                     b.ToTable("Games");
                 });
@@ -184,6 +185,15 @@ namespace VideogamesWebApp.Migrations
                     b.HasKey("UserId");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("VideogamesWebApp.Models.Game", b =>
+                {
+                    b.HasOne("VideogamesWebApp.Models.Game", "MainGame")
+                        .WithMany()
+                        .HasForeignKey("MainGameId");
+
+                    b.Navigation("MainGame");
                 });
 
             modelBuilder.Entity("VideogamesWebApp.Models.GameTransactions", b =>
