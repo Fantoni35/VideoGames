@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using Microsoft.AspNetCore.Mvc;
 using VideogamesWebApp.Models;
 using GamesDataAccess;

@@ -53,9 +53,6 @@ public class GamesController : Controller
         var transactions = transactionsQuery.ToList();
         ViewData["Username"] = username;
 
-
-
-
         ViewData["searchQuery"] = searchQuery;
 
         ViewData["AvailableGames"] = _dbContext.Games
@@ -172,7 +169,7 @@ public class GamesController : Controller
     {
         if (!string.IsNullOrWhiteSpace(storeName))
         {
-            // Check if the store name already exists in the database
+            
             var existingStore = _dbContext.Stores.FirstOrDefault(s => s.StoreName == storeName);
             if (existingStore != null)
             {
@@ -180,7 +177,7 @@ public class GamesController : Controller
                 return RedirectToAction("Index");
             }
 
-            // Add the new store if it doesn't exist
+            
             var newStore = new Stores
             {
                 StoreName = storeName,
@@ -207,7 +204,7 @@ public class GamesController : Controller
     {
         if (!string.IsNullOrWhiteSpace(platformName))
         {
-            // Case-insensitive check for existing platform
+            
             var existingPlatform = _dbContext.Platforms
                 .FirstOrDefault(p => p.PlatformName.ToLower() == platformName.ToLower());
 
@@ -217,7 +214,7 @@ public class GamesController : Controller
                 return RedirectToAction("Index");
             }
 
-            // Add the new platform if it doesn't exist
+           
             var newPlatform = new Platforms
             {
                 PlatformName = platformName,
@@ -242,7 +239,7 @@ public class GamesController : Controller
     {
         if (!string.IsNullOrWhiteSpace(launcherName))
         {
-            // Case-insensitive check for existing launcher
+            
             var existingLauncher = _dbContext.Launchers
                 .FirstOrDefault(l => l.LauncherName.ToLower() == launcherName.ToLower());
 
@@ -252,7 +249,7 @@ public class GamesController : Controller
                 return RedirectToAction("Index");
             }
 
-            // Add the new launcher if it doesn't exist
+            
             var newLauncher = new Launcher
             {
                 LauncherName = launcherName,
@@ -290,9 +287,6 @@ public class GamesController : Controller
         TempData["SuccessMessage"] = "Game deleted successfully.";
         return RedirectToAction("Index");
     }
-
-
-
 
     [HttpGet]
     public IActionResult SearchGames(string query)
