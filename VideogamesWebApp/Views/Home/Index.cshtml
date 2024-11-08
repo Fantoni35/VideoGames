@@ -24,7 +24,7 @@
         background-color: #17a2b8;
         color: white;
     }
-        
+
 
     .search-container {
         position: relative;
@@ -336,9 +336,9 @@
     function showError(inputElement, errorElement, isValid, customMessage = '', buttonHtml = '') {
         if (!isValid) {
             errorElement.innerHTML = `
-                    <div class="error-message">${customMessage}</div>
-                    ${buttonHtml.replace('btn btn-sm btn-primary mt-2', 'error-action-button')}
-                `;
+                        <div class="error-message">${customMessage}</div>
+                        ${buttonHtml.replace('btn btn-sm btn-primary mt-2', 'error-action-button')}
+                    `;
             errorElement.style.display = 'block';
             inputElement.classList.add('is-invalid');
         } else {
@@ -363,7 +363,7 @@
         }
         // Valida Store
         if (!storeSelected.value) {
-            const storeButton = '<button type="button" class="btn btn-sm btn-primary mt-2" onclick="openAddStoreModal()">Add New Store</button>';
+            const storeButton = `<button type="button" class="btn btn-sm btn-primary mt-2" onclick="openAddStoreModal('${storeSearch.value}')">Add New Store</button>`;
             showError(
                 storeSearch,
                 document.getElementById('storeSearchError'),
@@ -407,9 +407,13 @@
         window.location.href = '@Url.Action("ViewAllGames", "Games")#addGameModal';
     }
 
-    function openAddStoreModal() {
+    function openAddStoreModal(storeName) {
         let buyGameModal = bootstrap.Modal.getInstance(document.getElementById('buyGameModal'));
         buyGameModal.hide();
+
+        // Precompila il campo "storeName" nel modal di aggiunta
+        document.getElementById('storeName').value = storeName;
+
         let storeModal = new bootstrap.Modal(document.getElementById('addStoreModal'));
         storeModal.show();
     }
@@ -440,10 +444,13 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        if (formId === 'addStoreForm' || formId === 'addPlatformForm' || formId === 'addLauncherForm') {
-                            if (closeModal) {
-                                bootstrap.Modal.getInstance(document.getElementById(formId).closest('.modal')).hide();
-                            }
+                        if (formId === 'addStoreForm') {
+                            // Close the add store modal
+                            let addStoreModal = bootstrap.Modal.getInstance(document.getElementById(formId).closest('.modal'));
+                            addStoreModal.hide();
+
+                            // Open the buy game modal with the store name pre-filled
+                            openBuyGameModalWithStore(data.storeName, data.storeId); // Passa anche l'ID
                         } else {
                             updateFunction(data);
                             if (closeModal) {
@@ -452,10 +459,6 @@
                         }
                     } else {
                         alert(data.message);
-                        if (formId !== 'addStoreForm' && formId !== 'addPlatformForm' && formId !== 'addLauncherForm') {
-                            let buyGameModal = new bootstrap.Modal(document.getElementById('buyGameModal'));
-                            buyGameModal.show();
-                        }
                     }
                 })
                 .catch(error => console.error('Error:', error));
@@ -463,6 +466,20 @@
     }
 
 
+    function openBuyGameModalWithStore(storeName, storeId) {
+        // Nascondi il messaggio di errore e il pulsante per aggiungere uno store
+        const errorMessageElement = document.getElementById('storeSearchError');
+        errorMessageElement.style.display = 'none'; // Nascondi l'elemento di errore
+        errorMessageElement.innerHTML = ''; // Pulisci il contenuto (opzionale)
+
+        // Imposta il nome dello store nel campo di input
+        document.getElementById('storeSearch').value = storeName;
+        document.getElementById('storeId').value = storeId; // Imposta l'ID dello store
+
+        // Mostra il modal di acquisto
+        let buyGameModal = new bootstrap.Modal(document.getElementById('buyGameModal'));
+        buyGameModal.show();
+    }
     // Funzioni per aggiornare i campi nel modale di acquisto
     function updateStoreField(data) {
         document.getElementById('storeSearch').value = data.storeName;
@@ -526,7 +543,7 @@
     }
 
 
-    const gameSelected = { value: false }; 
+    const gameSelected = { value: false };
     gameSearch.addEventListener('input', function () {
         gameSelected.value = false; // Resetta il flag
         const searchQuery = this.value.trim().toLowerCase();
@@ -542,7 +559,7 @@
                             div.textContent = game.gameName;
                             div.dataset.id = game.gameId;
 
-                            
+
                             div.addEventListener('mousedown', () => {
                                 selectSuggestion(gameSearch, gameId, div, gameSelected, document.getElementById('gameSearchError'));
                             });
@@ -665,7 +682,7 @@
         }
     });
 
-    
+
     document.getElementById('buyGameModal').addEventListener('hidden.bs.modal', function () {
         gameSearch.value = '';
         storeSearch.value = '';
@@ -694,6 +711,39 @@
                 errorMessage.style.display = "none";
             }, 3000);
         }
+    });
+
+
+    document.getElementById('storeSearch').addEventListener('input', function () {
+        const inputValue = this.value;
+        validateStoreInput(inputValue);
+    });
+
+    function validateStoreInput(inputValue) {
+        const errorMessageElement = document.getElementById('storeSearchError');
+        const storeInput = document.getElementById('storeSearch');
+
+        // Check if the input value matches any existing store
+        if (existingStores.includes(inputValue)) {
+            // Valid input, remove error styles
+            errorMessageElement.style.display = 'none'; // Hide error message
+            storeInput.classList.remove('is-invalid'); // Remove invalid class
+        } else {
+            // Invalid input, show error message
+            errorMessageElement.style.display = 'block'; // Show error message
+            errorMessageElement.innerHTML = 'Store not found. Please select from the dropdown or create a new store.';
+            storeInput.classList.add('is-invalid'); // Add invalid class
+        }
+    }
+
+    function showDropdownSuggestions() {
+        const storeSearchResults = document.getElementById('storeSearchResults');
+        storeSearchResults.style.display = 'block'; // Show the dropdown
+    }
+
+    // Call this function when the input changes
+    document.getElementById('storeSearch').addEventListener('input', function () {
+        showDropdownSuggestions();
     });
 
 
