@@ -125,6 +125,7 @@
                 <div class="modal-body">
                     <form asp-action="BuyGame" asp-controller="Games" method="post" id="buyGameForm">
 
+                        <!-- Game Name Input -->
                         <div class="mb-3">
                             <label for="gameSearch">Game Name</label>
                             <div class="search-container">
@@ -135,6 +136,7 @@
                             <input type="hidden" id="gameId" name="GameId">
                         </div>
 
+                        <!-- Store Input -->
                         <div class="mb-3">
                             <label for="storeSearch">Store</label>
                             <div class="search-container">
@@ -148,6 +150,7 @@
                             <input type="hidden" id="storeId" name="StoreId">
                         </div>
 
+                        <!-- Platform Input -->
                         <div class="mb-3">
                             <label for="platformSearch">Platform</label>
                             <div class="search-container">
@@ -161,6 +164,7 @@
                             <input type="hidden" id="platformId" name="PlatformId">
                         </div>
 
+                        <!-- Launcher Input -->
                         <div class="mb-3">
                             <label for="launcherSearch">Launcher</label>
                             <div class="search-container">
@@ -174,18 +178,19 @@
                             <input type="hidden" id="launcherId" name="LauncherId">
                         </div>
 
-
-
+                        <!-- Purchase Date with Default Value -->
                         <div class="mb-3">
                             <label for="purchaseDate" class="form-label">Purchase Date</label>
                             <input type="date" class="form-control" id="purchaseDate" name="PurchaseDate" required>
                         </div>
 
+                        <!-- Price Input -->
                         <div class="mb-3">
                             <label for="price" class="form-label">Price</label>
                             <input type="number" step="0.01" class="form-control" id="price" name="Price" required>
                         </div>
 
+                        <!-- Is Virtual Copy Dropdown -->
                         <div class="mb-3">
                             <label for="isVirtual" class="form-label">Is Virtual Copy</label>
                             <select class="form-control" id="isVirtual" name="IsVirtual" required>
@@ -193,6 +198,8 @@
                                 <option value="false">No</option>
                             </select>
                         </div>
+
+                        <!-- Notes Input -->
                         <div class="mb-3">
                             <label for="notes" class="form-label">Notes</label>
                             <textarea class="form-control" id="notes" name="Notes" required></textarea>
@@ -200,7 +207,6 @@
 
                         <button type="submit" class="btn btn-primary">Confirm Purchase</button>
                     </form>
-
                 </div>
             </div>
         </div>
@@ -349,59 +355,37 @@
     function validateForm() {
         let isValid = true;
 
-        // Valida Game
+        // Validate Game
         if (!gameSelected.value) {
             const gameButton = '<button type="button" class="btn btn-sm btn-primary mt-2" onclick="redirectToAddGame()">Add New Game</button>';
-            showError(
-                gameSearch,
-                document.getElementById('gameSearchError'),
-                false,
-                "Please enter a valid game or add it if you want",
-                gameButton
-            );
+            showError(gameSearch, document.getElementById('gameSearchError'), false, "Please enter a valid game or add it if you want", gameButton);
             isValid = false;
         }
-        // Valida Store
+
+        // Validate Store
         if (!storeSelected.value) {
             const storeButton = `<button type="button" class="btn btn-sm btn-primary mt-2" onclick="openAddStoreModal('${storeSearch.value}')">Add New Store</button>`;
-            showError(
-                storeSearch,
-                document.getElementById('storeSearchError'),
-                false,
-                "Please enter a valid store or add it if you want",
-                storeButton
-            );
+            showError(storeSearch, document.getElementById('storeSearchError'), false, "Please enter a valid store or add it if you want", storeButton);
             isValid = false;
         }
 
-        // Valida Platform
+        // Validate Platform
         if (!platformSelected.value) {
             const platformButton = '<button type="button" class="btn btn-sm btn-primary mt-2" onclick="openAddPlatformModal()">Add New Platform</button>';
-            showError(
-                platformSearch,
-                document.getElementById('platformSearchError'),
-                false,
-                "Please enter a valid platform or add it if you want",
-                platformButton
-            );
+            showError(platformSearch, document.getElementById('platformSearchError'), false, "Please enter a valid platform or add it if you want", platformButton);
             isValid = false;
         }
 
-        // Valida Launcher
+        // Validate Launcher
         if (!launcherSelected.value) {
             const launcherButton = '<button type="button" class="btn btn-sm btn-primary mt-2" onclick="openAddLauncherModal()">Add New Launcher</button>';
-            showError(
-                launcherSearch,
-                document.getElementById('launcherSearchError'),
-                false,
-                "Please enter a valid launcher or add it if you want",
-                launcherButton
-            );
+            showError(launcherSearch, document.getElementById('launcherSearchError'), false, "Please enter a valid launcher or add it if you want", launcherButton);
             isValid = false;
         }
 
         return isValid;
     }
+
     function redirectToAddGame() {
         // Reindirizza alla pagina di aggiunta del gioco
         window.location.href = '@Url.Action("ViewAllGames", "Games")#addGameModal';
@@ -421,6 +405,10 @@
     function openAddPlatformModal() {
         let buyGameModal = bootstrap.Modal.getInstance(document.getElementById('buyGameModal'));
         buyGameModal.hide();
+
+        // Pre-fill the field "platformName" in the add platform modal
+        document.getElementById('platformName').value = platformSearch.value;
+
         let platformModal = new bootstrap.Modal(document.getElementById('addPlatformModal'));
         platformModal.show();
     }
@@ -428,6 +416,10 @@
     function openAddLauncherModal() {
         let buyGameModal = bootstrap.Modal.getInstance(document.getElementById('buyGameModal'));
         buyGameModal.hide();
+
+        // Pre-fill the field "launcherName" in the add launcher modal
+        document.getElementById('launcherName').value = launcherSearch.value;
+
         let launcherModal = new bootstrap.Modal(document.getElementById('addLauncherModal'));
         launcherModal.show();
     }
@@ -467,19 +459,27 @@
 
 
     function openBuyGameModalWithStore(storeName, storeId) {
-        // Nascondi il messaggio di errore e il pulsante per aggiungere uno store
-        const errorMessageElement = document.getElementById('storeSearchError');
-        errorMessageElement.style.display = 'none'; // Nascondi l'elemento di errore
-        errorMessageElement.innerHTML = ''; // Pulisci il contenuto (opzionale)
+    // Nascondi il messaggio di errore e aggiorna lo stato di validità
+    const errorMessageElement = document.getElementById('storeSearchError');
+    errorMessageElement.style.display = 'none'; // Nascondi l'elemento di errore
+    errorMessageElement.innerHTML = ''; // Pulisci il contenuto (opzionale)
 
-        // Imposta il nome dello store nel campo di input
-        document.getElementById('storeSearch').value = storeName;
-        document.getElementById('storeId').value = storeId; // Imposta l'ID dello store
+    // Imposta il nome dello store nel campo di input e l'ID nascosto
+    document.getElementById('storeSearch').value = storeName;
+    document.getElementById('storeId').value = storeId;
 
-        // Mostra il modal di acquisto
-        let buyGameModal = new bootstrap.Modal(document.getElementById('buyGameModal'));
-        buyGameModal.show();
-    }
+    // Imposta il flag di storeSelected a true, poiché è stato selezionato un nuovo store
+    storeSelected.value = true;
+
+    // Rimuovi eventuali classi di errore per evitare l'indicazione di errore visivo
+    document.getElementById('storeSearch').classList.remove('is-invalid');
+
+    // Mostra il modal di acquisto
+    let buyGameModal = new bootstrap.Modal(document.getElementById('buyGameModal'));
+    buyGameModal.show();
+}
+
+
     // Funzioni per aggiornare i campi nel modale di acquisto
     function updateStoreField(data) {
         document.getElementById('storeSearch').value = data.storeName;
@@ -491,15 +491,23 @@
     function updatePlatformField(data) {
         document.getElementById('platformSearch').value = data.platformName;
         document.getElementById('platformId').value = data.platformId;
-        platformSelected.value = true;
-        showError(platformSearch, document.getElementById('platformSearchError'), true);
+        platformSelected.value = true; // Mark as selected
+        showError(platformSearch, document.getElementById('platformSearchError'), true); // Hide error
+
+        // Show the Buy Game modal again
+        let buyGameModal = new bootstrap.Modal(document.getElementById('buyGameModal'));
+        buyGameModal.show();
     }
 
     function updateLauncherField(data) {
         document.getElementById('launcherSearch').value = data.launcherName;
         document.getElementById('launcherId').value = data.launcherId;
-        launcherSelected.value = true;
-        showError(launcherSearch, document.getElementById('launcherSearchError'), true);
+        launcherSelected.value = true; // Mark as selected
+        showError(launcherSearch, document.getElementById('launcherSearchError'), true); // Hide error
+
+        // Show the Buy Game modal again
+        let buyGameModal = new bootstrap.Modal(document.getElementById('buyGameModal'));
+        buyGameModal.show();
     }
 
     // Aggiungi gli event listener per i form quando il documento è caricato
@@ -744,6 +752,12 @@
     // Call this function when the input changes
     document.getElementById('storeSearch').addEventListener('input', function () {
         showDropdownSuggestions();
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const purchaseDateInput = document.getElementById("purchaseDate");
+        const today = new Date().toISOString().split("T")[0];
+        purchaseDateInput.value = today;
     });
 
 

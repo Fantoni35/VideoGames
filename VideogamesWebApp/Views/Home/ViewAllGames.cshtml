@@ -27,6 +27,17 @@
         <button type="button" class="btn btn-primary mx-2" data-bs-toggle="modal" data-bs-target="#addGameModal">
             Add New Game
         </button>
+        <div class="dropdown mx-2">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                Sort By
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="sortDropdown">
+                <li><a class="dropdown-item" href="@Url.Action("ViewAllGames", new { sortOrder = "alphabetical", pageNumber = 1 })">Alphabetical</a></li>
+                <li><a class="dropdown-item" href="@Url.Action("ViewAllGames", new { sortOrder = "reverseAlphabetical", pageNumber = 1 })">Reverse Alphabetical</a></li>
+                <li><a class="dropdown-item" href="@Url.Action("ViewAllGames", new { sortOrder = "mostDLC", pageNumber = 1 })">Most DLC</a></li>
+                <li><a class="dropdown-item" href="@Url.Action("ViewAllGames", new { sortOrder = "leastDLC", pageNumber = 1 })">Least DLC</a></li>
+            </ul>
+        </div>
     </div>
 
     @if (TempData["ErrorMessage"] != null)
@@ -42,6 +53,7 @@
                 <th scope="col">Game Name</th>
                 <th scope="col">Description</th>
                 <th scope="col">Is DLC of:</th>
+                <th scope="col">Number of DLCs</th>
                 <th scope="col">List of DLC:</th>
             </tr>
         </thead>
@@ -52,6 +64,16 @@
                     <td><strong>@game.GameName</strong></td>
                     <td>@game.GameDescription</td>
                     <td>@(game.MainGameId.HasValue ? game.MainGameName : "-")</td>
+                    <td>
+                        @if (game.MainGameId == null)
+                        {
+                            <span class="badge bg-primary">@game.DLCCount</span>
+                        }
+                        else
+                        {
+                            <span>-</span>
+                        }
+                    </td>
                     <td>
                         @{
                             bool hasDLCs = Model.Any(g => g.MainGameId == game.GameId);
@@ -78,83 +100,90 @@
             @{
                 var currentPage = (int)ViewData["CurrentPage"];
                 var totalPages = (int)ViewData["TotalPages"];
+                var currentSortOrder = (string)ViewData["CurrentSortOrder"]; // Get current sort order
 
                 if (currentPage > 1)
                 {
                     <li class="page-item">
-                        <a class="page-link" href="@Url.Action("ViewAllGames", new { pageNumber = currentPage - 1 })">Previous</a>
+                        <a class="page-link" href="@Url.Action("ViewAllGames", new { pageNumber = currentPage - 1, sortOrder = currentSortOrder })">Previous</a>
                     </li>
                 }
 
                 for (int i = 1; i <= totalPages; i++)
                 {
                     <li class="page-item @(i == currentPage ? "active" : "")">
-                        <a class="page-link" href="@Url.Action("ViewAllGames", new { pageNumber = i })">@i</a>
+                        <a class="page-link" href="@Url.Action("ViewAllGames", new { pageNumber = i, sortOrder = currentSortOrder })">@i</a>
                     </li>
                 }
 
                 if (currentPage < totalPages)
                 {
                     <li class="page-item">
-                        <a class="page-link" href="@Url.Action("ViewAllGames", new { pageNumber = currentPage + 1 })">Next</a>
+                        <a class="page-link" href="@Url.Action("ViewAllGames", new { pageNumber = currentPage + 1, sortOrder = currentSortOrder })">Next</a>
                     </li>
                 }
             }
         </ul>
     </nav>
-</div>
-<!-- Modal for Adding New Game -->
-<div class="modal fade" id="addGameModal" tabindex="-1" aria-labelledby="addGameModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addGameModalLabel">Add New Game</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <!-- Modal for Adding New Game -->
+    <div class="modal fade" id="addGameModal" tabindex="-1" aria-labelledby="addGameModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addGameModalLabel">Add New Game</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form asp-action="AddGame" asp-controller="Games" method="post">
+                        <div class="mb-3">
+                            <label for="gameName" class="form-label">Game Name</label>
+                            <input type="text" class="form-control" id="gameName" name="GameName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="gameDescription" class="form-label">Description</label>
+                            <textarea class="form-control" id="gameDescription" name="GameDescription" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="mainGameId" class="form-label">Main Game (optional)</label>
+                            <select class="form-select" id="mainGameId" name="MainGameId">
+                                <option value="">Select a main game (optional)</option>
+                                @foreach (var game in ViewBag.MainGames)
+                                {
+                                    <option value="@game.GameId">@game.GameName</option>
+                                }
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Game</button>
+                    </form>
+                </div>
             </div>
-            <div class="modal-body">
-                <form asp-action="AddGame" asp-controller="Games" method="post">
-                    <div class="mb-3">
-                        <label for="gameName" class="form-label">Game Name</label>
-                        <input type="text" class="form-control" id="gameName" name="GameName" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="gameDescription" class="form-label">Description</label>
-                        <textarea class="form-control" id="gameDescription" name="GameDescription" required></textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label for="mainGameId" class="form-label">Main Game (optional)</label>
-                        <select class="form-select" id="mainGameId" name="MainGameId">
-                            <option value="">Select a main game (optional)</option>
-                            @foreach (var game in ViewBag.MainGames)
-                            {
-                                <option value="@game.GameId">@game.GameName</option>
-                            }
-                        </select>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Add Game</button>
-                </form>
+        </div>
+    </div>
+    <div class="modal fade" id="dlcModal" tabindex="-1" aria-labelledby="dlcModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="dlcModalLabel">
+                        <span id="mainGameTitle"></span>
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <ul id="dlcList" class="list-group list-group-flush"></ul>
+
+                    <!-- Pagination -->
+                    <nav class="mt-3">
+                        <ul id="dlcPagination" class="pagination justify-content-center"></ul>
+                    </nav>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
             </div>
         </div>
     </div>
 </div>
-<div class="modal fade" id="dlcModal" tabindex="-1" aria-labelledby="dlcModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="dlcModalLabel">
-                    <span id="mainGameTitle"></span>
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <ul id="dlcList" class="list-group list-group-flush"></ul>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
+
 
 <script>
     function loadDLCs(mainGameId, gameName) {
@@ -175,9 +204,9 @@
                         const listItem = document.createElement("li");
                         listItem.className = "list-group-item";
                         listItem.innerHTML = `
-                                            <i class="fas fa-gamepad me-2 text-primary"></i>
-                                            <strong>${dlc.gameName}</strong>
-                                        `;
+                                                                                <i class="fas fa-gamepad me-2 text-primary"></i>
+                                                                                <strong>${dlc.gameName}</strong>
+                                                                            `;
                         dlcListElement.appendChild(listItem);
                     });
                 }
@@ -190,6 +219,89 @@
             addGameModal.show();
         }
     });
+    let currentMainGameId = null;
+    let currentGameName = null;
+
+    function loadDLCs(mainGameId, gameName, page = 1) {
+        currentMainGameId = mainGameId;
+        currentGameName = gameName;
+
+        document.getElementById("mainGameTitle").textContent = `DLCs for ${gameName}`;
+
+        fetch(`/Games/GetDLCs?mainGameId=${mainGameId}&page=${page}`)
+            .then(response => response.json())
+            .then(result => {
+                const dlcListElement = document.getElementById("dlcList");
+                const paginationElement = document.getElementById("dlcPagination");
+                dlcListElement.innerHTML = "";
+                paginationElement.innerHTML = "";
+
+                if (result.dlcs.length === 0) {
+                    const listItem = document.createElement("li");
+                    listItem.className = "list-group-item text-muted";
+                    listItem.textContent = "No DLCs found for this game.";
+                    dlcListElement.appendChild(listItem);
+                } else {
+                    result.dlcs.forEach(dlc => {
+                        const listItem = document.createElement("li");
+                        listItem.className = "list-group-item";
+                        listItem.innerHTML = `
+                                                                    <i class="fas fa-gamepad me-2 text-primary"></i>
+                                                                    <strong>${dlc.gameName}</strong>
+                                                                `;
+                        dlcListElement.appendChild(listItem);
+                    });
+
+                    if (result.totalPages > 1) {
+                        if (result.currentPage > 1) {
+                            const prevLi = document.createElement("li");
+                            prevLi.className = "page-item";
+                            const prevLink = document.createElement("a");
+                            prevLink.className = "page-link";
+                            prevLink.href = "#";
+                            prevLink.textContent = "Previous";
+                            prevLink.onclick = (e) => {
+                                e.preventDefault();
+                                loadDLCs(currentMainGameId, currentGameName, result.currentPage - 1);
+                            };
+                            prevLi.appendChild(prevLink);
+                            paginationElement.appendChild(prevLi);
+                        }
+
+                        for (let i = 1; i <= result.totalPages; i++) {
+                            const pageLi = document.createElement("li");
+                            pageLi.className = `page-item ${i === result.currentPage ? 'active' : ''}`;
+                            const pageLink = document.createElement("a");
+                            pageLink.className = "page-link";
+                            pageLink.href = "#";
+                            pageLink.textContent = i;
+                            pageLink.onclick = (e) => {
+                                e.preventDefault();
+                                loadDLCs(currentMainGameId, currentGameName, i);
+                            };
+                            pageLi.appendChild(pageLink);
+                            paginationElement.appendChild(pageLi);
+                        }
+
+                        if (result.currentPage < result.totalPages) {
+                            const nextLi = document.createElement("li");
+                            nextLi.className = "page-item";
+                            const nextLink = document.createElement("a");
+                            nextLink.className = "page-link";
+                            nextLink.href = "#";
+                            nextLink.textContent = "Next";
+                            nextLink.onclick = (e) => {
+                                e.preventDefault();
+                                loadDLCs(currentMainGameId, currentGameName, result.currentPage + 1);
+                            };
+                            nextLi.appendChild(nextLink);
+                            paginationElement.appendChild(nextLi);
+                        }
+                    }
+                }
+            })
+            .catch(error => console.error('Error fetching DLCs:', error));
+    }
 
 </script>
 

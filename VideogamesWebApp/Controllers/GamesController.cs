@@ -1,5 +1,6 @@
 ﻿using GamesDataAccess;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using VideogamesWebApp.Models;
 
@@ -103,42 +104,55 @@ public class GamesController : Controller
     }
 
 
-    public IActionResult ViewAllGames(int pageNumber = 1)
+    public IActionResult ViewAllGames(int pageNumber = 1, string sortOrder = "alphabetical")
     {
         int pageSize = 10;
         var username = GetUsername();
 
-        var allGamesQuery = _dbContext.Games
-                                .Include(g => g.MainGame)
-                                .Select(game => new GameViewModel
-                                {
-                                    GameId = game.GameId,
-                                    GameName = game.GameName,
-                                    GameDescription = game.GameDescription,
-                                    MainGameId = game.MainGameId,
-                                    MainGameName = game.MainGame != null ? game.MainGame.GameName : null
-                                });
+        // Applichiamo l'ordinamento direttamente nella query al database
+        IQueryable<GameViewModel> allGamesQuery = _dbContext.Games
+            .Select(game => new GameViewModel
+            {
+                GameId = game.GameId,
+                GameName = game.GameName,
+                GameDescription = game.GameDescription,
+                MainGameId = game.MainGameId,
+                MainGameName = game.MainGame != null ? game.MainGame.GameName : null,
+                DLCCount = _dbContext.Games.Count(dlc => dlc.MainGameId == game.GameId)
+            });
 
+        // Applichiamo il sorting in base al sortOrder selezionato
+        allGamesQuery = sortOrder switch
+        {
+            "alphabetical" => allGamesQuery.OrderBy(game => game.GameName),
+            "reverseAlphabetical" => allGamesQuery.OrderByDescending(game => game.GameName),
+            "mostDLC" => allGamesQuery.OrderByDescending(game => game.DLCCount),
+            "leastDLC" => allGamesQuery.OrderBy(game => game.DLCCount),
+            _ => allGamesQuery.OrderBy(game => game.GameName) // Default su alfabetico
+        };
+
+        // Selezioniamo i giochi principali per il menu a tendina e li ordiniamo alfabeticamente
         var mainGames = _dbContext.Games
-        .Where(g => g.MainGameId == null)
-        .Select(g => new { g.GameId, g.GameName })
-        .ToList();
+            .Where(g => g.MainGameId == null)
+            .OrderBy(g => g.GameName)
+            .Select(g => new { g.GameId, g.GameName })
+            .ToList();
 
         ViewBag.MainGames = mainGames;
 
         int totalGames = allGamesQuery.Count();
         var paginatedGames = allGamesQuery
-                                .Skip((pageNumber - 1) * pageSize)
-                                .Take(pageSize)
-                                .ToList();
+            .Skip((pageNumber - 1) * pageSize) // Pagina corretta con l'ordinamento applicato prima
+            .Take(pageSize)
+            .ToList();
 
         ViewData["Username"] = username;
         ViewData["TotalPages"] = (int)Math.Ceiling((double)totalGames / pageSize);
         ViewData["CurrentPage"] = pageNumber;
+        ViewData["CurrentSortOrder"] = sortOrder;
 
         return View("~/Views/Home/ViewAllGames.cshtml", paginatedGames);
     }
-
 
     private string GetUsername()
     {
@@ -162,8 +176,8 @@ public class GamesController : Controller
 
             if (existingGame != null)
             {
-                TempData["ErrorMessage"] = "A game with the same name, description, and main game already exists. Please enter different details.";
-                return RedirectToAction("ViewAllGames");
+                TempData["ErrorMessage"] = "Un gioco con lo stesso nome, descrizione e gioco principale esiste già. Inserisci dettagli diversi.";
+                return RedirectToAction("ViewAllGames", new { sortOrder = "alphabetical" });
             }
 
             var game = new Game
@@ -175,13 +189,13 @@ public class GamesController : Controller
             _dbContext.Games.Add(game);
             await _dbContext.SaveChangesAsync();
 
-            return RedirectToAction("ViewAllGames");
+            // Reindirizza con l'ordine alfabetico per includere il nuovo gioco in ordine
+            return RedirectToAction("ViewAllGames", new { sortOrder = "alphabetical" });
         }
 
-        TempData["ErrorMessage"] = "Game name and description cannot be empty.";
-        return RedirectToAction("ViewAllGames");
+        TempData["ErrorMessage"] = "Il nome e la descrizione del gioco non possono essere vuoti.";
+        return RedirectToAction("ViewAllGames", new { sortOrder = "alphabetical" });
     }
-
     [HttpPost]
     public IActionResult AddStore(string storeName, string storeDescription, string storeLink)
     {
@@ -355,16 +369,32 @@ public class GamesController : Controller
         return Json(launchers);
     }
     [HttpGet]
-    public IActionResult GetDLCs(int mainGameId)
+    public IActionResult GetDLCs(int mainGameId, int page = 1, int pageSize = 5)
     {
-        var dlcs = _dbContext.Games
-                    .Where(g => g.MainGameId == mainGameId)
-                    .Select(g => new { g.GameId, g.GameName })
+        var dlcsQuery = _dbContext.Games
+                        .Where(g => g.MainGameId == mainGameId)
+                        .Select(g => new { g.GameId, g.GameName });
+
+        int totalDLCs = dlcsQuery.Count();
+        int totalPages = (int)Math.Ceiling((double)totalDLCs / pageSize);
+
+        var dlcs = dlcsQuery
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize)
                     .ToList();
-        return Json(dlcs);
+
+        return Json(new
+        {
+            dlcs = dlcs,
+            currentPage = page,
+            totalPages = totalPages
+        });
     }
 
 
 
 }
+
+
+
 
