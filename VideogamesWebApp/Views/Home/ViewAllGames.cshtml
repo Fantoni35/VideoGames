@@ -41,7 +41,7 @@
             <tr>
                 <th scope="col">Game Name</th>
                 <th scope="col">Description</th>
-                <th scope="col">Main Game</th>
+                <th scope="col">Is DLC of:</th>
                 <th scope="col">List of DLC:</th>
             </tr>
         </thead>
@@ -175,16 +175,24 @@
                         const listItem = document.createElement("li");
                         listItem.className = "list-group-item";
                         listItem.innerHTML = `
-                                        <i class="fas fa-gamepad me-2 text-primary"></i>
-                                        <strong>${dlc.gameName}</strong>
-                                    `;
+                                            <i class="fas fa-gamepad me-2 text-primary"></i>
+                                            <strong>${dlc.gameName}</strong>
+                                        `;
                         dlcListElement.appendChild(listItem);
                     });
                 }
             })
             .catch(error => console.error('Error fetching DLCs:', error));
     }
+    document.addEventListener("DOMContentLoaded", function () {
+        if (window.location.hash === '#addGameModal') {
+            var addGameModal = new bootstrap.Modal(document.getElementById('addGameModal'));
+            addGameModal.show();
+        }
+    });
+
 </script>
+
 
 
 
