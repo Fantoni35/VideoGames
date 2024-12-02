@@ -1,13 +1,16 @@
-﻿$(document).ready(function () {
-    setTimeout(function () {
-        $('#successMessage').fadeOut('slow');
-    }, 3000);
-});
-
-$(document).ready(function () {
-    setTimeout(function () {
-        $('#errorMessage').fadeOut('slow');
-    }, 3000);
+﻿document.addEventListener("DOMContentLoaded", function () {
+    const successMessage = document.querySelector(".alert-success");
+    if (successMessage) {
+        setTimeout(() => {
+            successMessage.style.display = "none";
+        }, 3000);
+    }
+    const errorMessage = document.querySelector(".alert-danger");
+    if (errorMessage) {
+        setTimeout(() => {
+            errorMessage.style.display = "none";
+        }, 3000);
+    }
 });
 
 function loadDLCs(mainGameId, gameName) {

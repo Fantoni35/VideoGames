@@ -753,49 +753,54 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 async function checkDuplicatePurchase(event) {
-    event.preventDefault(); // Impedisce il submit automatico del form.
+    async function checkDuplicatePurchase(event) {
+        event.preventDefault(); // Impedisce il submit automatico del form.
 
-    const gameId = document.getElementById("gameId").value;
-    const storeId = document.getElementById("storeId").value;
+        const gameId = document.getElementById("gameId").value;
+        const storeId = document.getElementById("storeId").value;
+        const platformId = document.getElementById("platformId").value;
+        const launcherId = document.getElementById("launcherId").value; // Aggiungi questa riga
 
-    if (!gameId || !storeId) {
-        alert("Please select a valid game and store.");
-        return false;
-    }
-
-    try {
-        // Chiamata AJAX per controllare duplicati.
-        const response = await fetch(`/Games/CheckDuplicatePurchase?gameId=${gameId}&storeId=${storeId}`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json"
-            }
-        });
-
-        const result = await response.json();
-        if (result.isDuplicate) {
-            // Mostra il warning con scelta OK/Cancel.
-            const confirmAdd = confirm("You have already purchased this game from this store. Are you sure you want to continue?");
-
-            if (confirmAdd) {
-                // Se OK, esegue il submit del form.
-                document.getElementById("buyGameForm").submit();
-            } else {
-                // Se Cancel, resetta il form.
-                document.getElementById("buyGameForm").reset();
-            }
-            return false; // Blocca ulteriori azioni.
+        if (!gameId || !storeId || !platformId || !launcherId) { // Controlla anche il launcher
+            alert("Please select a valid game, store, platform, and launcher.");
+            return false;
         }
-    } catch (error) {
-        console.error("Error checking duplicate purchase:", error);
-        alert("An error occurred while checking duplicate purchases.");
-        return false;
+
+        try {
+            // Chiamata AJAX per controllare duplicati.
+            const response = await fetch(`/Games/CheckDuplicatePurchase?gameId=${gameId}&storeId=${storeId}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
+            const result = await response.json();
+            if (result.isDuplicate) {
+                // Mostra il warning con scelta OK/Cancel.
+                const confirmAdd = confirm("You have already purchased this game from this store. Are you sure you want to continue?");
+                if (confirmAdd) {
+                    // Se OK, esegue il submit del form.
+                    document.getElementById("buyGameForm").submit();
+                } else {
+                    // Se Cancel, resetta il form.
+                    document.getElementById("buyGameForm").reset();
+                }
+                return false; // Blocca ulteriori azioni.
+            }
+        } catch (error) {
+            console.error("Error checking duplicate purchase:", error);
+            alert("An error occurred while checking duplicate purchases.");
+            return false;
+        }
+        // Se non è duplicato, invia il form normalmente.
+        document.getElementById("buyGameForm").submit();
+        return true;
     }
 
-    // Se non è duplicato, invia il form normalmente.
-    document.getElementById("buyGameForm").submit();
-    return true;
-}
+
+
+
+
 document.querySelector('.btn.btn-primary').addEventListener('click', function () {
     // Get the selected profile image value from the radio buttons
     const selectedImage = document.querySelector('input[name="profileImage"]:checked');
