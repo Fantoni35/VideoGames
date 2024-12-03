@@ -9,7 +9,7 @@
 <div class="container mt-4 container-bg">
     <div class="welcome-container d-flex align-items-center justify-content-between p-4 rounded mb-4 shadow">
         <div class="welcome-text d-flex align-items-center">
-            <!-- Make the icon clickable by wrapping it with a button -->
+            
             <button type="button" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#editAvatarModal">
                 @{
                     if (image != null)
@@ -18,7 +18,7 @@
                     }
                     else
                     {
-                        <!-- Placeholder image (initial user icon) -->
+                        
                         <img id="userProfileImage" src="/images/utenteStock.png" alt="Profile Image" class="img-fluid rounded-circle" style="width: 3rem; height: 3rem;" />
                     }
                 }
@@ -39,55 +39,55 @@
         </form>
     </div>
 
-    <!-- Modal for editing account -->
+    
+    <!-- Modal for Edit Avatar -->
     <div class="modal fade" id="editAvatarModal" tabindex="-1" aria-labelledby="editAvatarModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <!-- You can add your form fields here for editing account -->
-                <form method="post" asp-controller="Account" asp-action="EditAvatar">
+                <form method="post" enctype="multipart/form-data" asp-controller="Account" asp-action="EditAvatar">
                     <input type="hidden" id="userId" />
                     <div class="modal-header">
                         <h5 class="modal-title" id="editAvatarModalLabel">Edit Avatar</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <!-- Image selection section -->
                         <div class="mb-3">
                             <label for="profileImage" class="form-label">Select Profile Image</label>
-                            <div class="d-flex gap-3">
-                                <!-- Image 1 -->
-                                <div>
-                                    <input type="radio" id="profileImage" name="profileImage" value="/images/avatar2.jpg" class="form-check-input" />
-                                    <label for="image">
-                                        <img src="/images/avatar2.jpg" alt="Image 1" class="img-fluid rounded-circle" style="width: 100px; height: 100px;" />
-                                    </label>
-                                </div>
-                                <!-- Image 2 -->
-                                <div>
-                                    <input type="radio" id="profileImage" name="profileImage" value="/images/avatar3.jpg" class="form-check-input" />
-                                    <label for="image">
-                                        <img src="/images/avatar3.jpg" alt="Image 2" class="img-fluid rounded-circle" style="width: 100px; height: 100px;" />
-                                    </label>
-                                </div>
-                                <!-- Image 3 -->
-                                <div>
-                                    <input type="radio" id="profileImage" name="profileImage" value="/images/avatar4.jpg" class="form-check-input" />
-                                    <label for="image">
-                                        <img src="/images/avatar4.jpg" alt="Image 3" class="img-fluid rounded-circle" style="width: 100px; height: 100px;" />
-                                    </label>
-                                </div>
+                            <div class="d-flex flex-wrap justify-content-center gap-4">
+                                @for (int i = 1; i <= 6; i++)
+                                {
+                                    <div class="text-center avatar-selection">
+                                        <input type="radio" id="profileImage@(i)" name="profileImage" value="/images/avatar@(i).jpeg" class="form-check-input" />
+                                        <label for="profileImage@(i)" class="d-block mt-2">
+                                            <img src="/images/avatar@(i).jpeg" alt="Image @(i)"
+                                                 class="img-fluid rounded-circle"
+                                                 style="width: 100px; height: 100px; object-fit: cover; cursor: pointer;" />
+                                        </label>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="custom-file-upload-wrapper text-center">
+                                <label for="customImage" class="custom-file-upload">
+                                    <i class="bi bi-cloud-upload-fill"></i> Choose an Image
+                                </label>
+                                <input type="file" id="customImage" name="customImage" class="form-control visually-hidden" accept="image/*" />
+                                <span id="fileSelected" class="d-block mt-2 text-muted">No file chosen</span>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        
                         <button type="submit" class="btn btn-primary" id="saveChangesButton">Save changes</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
+
+
+
 
     <form method="get" asp-controller="Games" asp-action="Index" class="d-flex mt-3 align-items-center gap-2">
         <div class="input-group w-25">

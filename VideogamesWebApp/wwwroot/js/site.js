@@ -722,107 +722,138 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
+// Aggiunge un listener all'input del campo storeSearch per validare il valore inserito
 document.getElementById('storeSearch').addEventListener('input', function () {
-    const inputValue = this.value;
-    validateStoreInput(inputValue);
+    const inputValue = this.value; // Ottiene il valore corrente dell'input
+    validateStoreInput(inputValue); // Valida il valore inserito
 });
+
+// Funzione per validare l'input del negozio
 function validateStoreInput(inputValue) {
-    const errorMessageElement = document.getElementById('storeSearchError');
-    const storeInput = document.getElementById('storeSearch');
+    const errorMessageElement = document.getElementById('storeSearchError'); // Elemento per visualizzare errori
+    const storeInput = document.getElementById('storeSearch'); // Campo di input del negozio
+
+    // Controlla se il valore inserito è presente nell'elenco dei negozi esistenti
     if (existingStores.includes(inputValue)) {
-        errorMessageElement.style.display = 'none';
-        storeInput.classList.remove('is-invalid');
+        errorMessageElement.style.display = 'none'; // Nasconde il messaggio di errore
+        storeInput.classList.remove('is-invalid'); // Rimuove la classe di errore
     } else {
-        errorMessageElement.style.display = 'block';
-        errorMessageElement.innerHTML = 'Store not found. Please select from the dropdown or create a new store.';
-        storeInput.classList.add('is-invalid');
+        errorMessageElement.style.display = 'block'; // Mostra il messaggio di errore
+        errorMessageElement.innerHTML = 'Store not found. Please select from the dropdown or create a new store.'; // Messaggio di errore
+        storeInput.classList.add('is-invalid'); // Aggiunge la classe di errore
     }
 }
+
+// Funzione per mostrare i suggerimenti del dropdown
 function showDropdownSuggestions() {
-    const storeSearchResults = document.getElementById('storeSearchResults');
-    storeSearchResults.style.display = 'block';
+    const storeSearchResults = document.getElementById('storeSearchResults'); // Elemento dropdown dei risultati
+    storeSearchResults.style.display = 'block'; // Mostra il dropdown
 }
+
+// Aggiunge un listener all'input del campo storeSearch per mostrare i suggerimenti del dropdown
 document.getElementById('storeSearch').addEventListener('input', function () {
-    showDropdownSuggestions();
+    showDropdownSuggestions(); // Mostra i suggerimenti
 });
+
+// Aggiunge un listener che inizializza il campo della data di acquisto quando la pagina è caricata
 document.addEventListener("DOMContentLoaded", function () {
-    const purchaseDateInput = document.getElementById("purchaseDate");
-    const today = new Date().toISOString().split("T")[0];
-    purchaseDateInput.value = today;
+    const purchaseDateInput = document.getElementById("purchaseDate"); // Campo della data di acquisto
+    const today = new Date().toISOString().split("T")[0]; // Ottiene la data odierna 
+    purchaseDateInput.value = today; // Imposta il valore del campo data con la data odierna
 });
 
+// Funzione asincrona per controllare se un acquisto è duplicato
 async function checkDuplicatePurchase(event) {
-    event.preventDefault();
+    event.preventDefault(); // Previene l'invio predefinito del modulo
 
+    // Ottiene i valori dei campi necessari
     const gameId = document.getElementById("gameId").value;
     const storeId = document.getElementById("storeId").value;
     const platformId = document.getElementById("platformId").value;
     const launcherId = document.getElementById("launcherId").value;
 
+    // Controlla che tutti i campi siano compilati
     if (!gameId || !storeId || !platformId || !launcherId) {
-        alert("Please select a valid game, store, platform, and launcher.");
-        return false;
+        alert("Please select a valid game, store, platform, and launcher."); // Messaggio di errore
+        return false; // Blocca il processo
     }
 
     try {
+        // Richiesta al server per verificare acquisti duplicati
         const response = await fetch(`/Games/CheckDuplicatePurchase?gameId=${gameId}&storeId=${storeId}`, {
-            method: "GET",
+            method: "GET", // Metodo GET per la richiesta
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json" // Tipo di contenuto JSON
             }
         });
-        const result = await response.json();
+        const result = await response.json(); // Converte la risposta in JSON
+
+        // Se l'acquisto è duplicato, mostra un messaggio di conferma
         if (result.isDuplicate) {
             const confirmAdd = confirm("You have already purchased this game from this store. Are you sure you want to continue?");
 
             if (confirmAdd) {
+                // Se l'utente conferma, invia il modulo
                 document.getElementById("buyGameForm").submit();
             } else {
+                // Se l'utente annulla, resetta il modulo
                 document.getElementById("buyGameForm").reset();
             }
-            return false;
+            return false; // Blocca il processo successivo
         }
     } catch (error) {
-        console.error("Error checking duplicate purchase:", error);
-        alert("An error occurred while checking duplicate purchases.");
-        return false;
+        console.error("Error checking duplicate purchase:", error); // Log dell'errore in console
+        alert("An error occurred while checking duplicate purchases."); // Messaggio di errore per l'utente
+        return false; // Blocca il processo
     }
+
+    // Se non ci sono duplicati, invia il modulo
     document.getElementById("buyGameForm").submit();
-    return true;
+    return true; // Conferma il completamento
 }
 
 
-
-
-
-
 document.querySelector('.btn.btn-primary').addEventListener('click', function () {
-    // Get the selected profile image value from the radio buttons
+    // Ottieni il valore dell'immagine del profilo selezionata dai pulsanti radio
     const selectedImage = document.querySelector('input[name="profileImage"]:checked');
+    const customImageInput = document.getElementById('customImage');
+    const profileImage = document.getElementById('userProfileImage');
 
+    // Controlla se è stata selezionata un'immagine predefinita
     if (selectedImage) {
-        // Get the value (e.g., 'image1', 'image2', 'image3')
-        let imageName = selectedImage.value;
+        // Aggiorna l'immagine del profilo con l'avatar selezionato
+        profileImage.src = selectedImage.value;
 
-        // Update the profile image shown on the page
-        let profileImage = document.getElementById('userProfileImage');
-
-        // Based on the selected image, set the corresponding image URL
-        if (imageName === 'image1') {
-            profileImage.src = "/images/avatar2.jpeg"; // Image 1 URL
-        } else if (imageName === 'image2') {
-            profileImage.src = "/images/avatar3.jpg"; // Image 2 URL
-        } else if (imageName === 'image3') {
-            profileImage.src = "/images/avatar4.jpg"; // Image 3 URL
-        }
-
-        // Close the modal after saving changes
+        // Chiudi il modal dopo aver salvato le modifiche
         var modal = bootstrap.Modal.getInstance(document.getElementById('editAvatarModal'));
         modal.hide();
-    } else {
-        alert('Please select an image.');
+    }
+    // Controlla se è stato caricato un file immagine personalizzato
+    else if (customImageInput.files && customImageInput.files[0]) {
+        const fileReader = new FileReader();
+
+        fileReader.onload = function (event) {
+            // Imposta l'anteprima dell'immagine caricata
+            profileImage.src = event.target.result;
+
+            // Chiudi il modal dopo aver aggiornato l'anteprima
+            var modal = bootstrap.Modal.getInstance(document.getElementById('editAvatarModal'));
+            modal.hide();
+        };
+
+        // Leggi il file caricato come URL dei dati
+        fileReader.readAsDataURL(customImageInput.files[0]);
+    }
+    // Nessuna immagine selezionata o caricata, mostra un avviso
+    else {
+        alert('Per favore seleziona un\'immagine o carica un\'immagine personalizzata.');
     }
 });
+
+    document.getElementById('customImage').addEventListener('change', function () {
+        const fileName = this.files && this.files.length > 0 ? this.files[0].name : 'No file chosen';
+        document.getElementById('fileSelected').textContent = fileName;
+    });
 
 
 

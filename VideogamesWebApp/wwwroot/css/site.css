@@ -676,3 +676,45 @@ tr:hover {
         color: red;
         font-weight: bold;
     }
+
+
+
+
+.avatar-selection {
+    margin-bottom: 15px;
+}
+
+    .avatar-selection input[type="radio"] {
+        display: none;
+    }
+
+        .avatar-selection input[type="radio"]:checked + label img {
+            border: 3px solid #007bff;
+            box-shadow: 0 0 10px rgba(0,123,255,0.5);
+        }
+
+
+.custom-file-upload-wrapper {
+    display: inline-block;
+    text-align: center;
+}
+
+.custom-file-upload {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+    .custom-file-upload:hover {
+        background-color: #0056b3;
+    }
+
+#fileSelected {
+    font-size: 14px;
+    color: #6c757d;
+}

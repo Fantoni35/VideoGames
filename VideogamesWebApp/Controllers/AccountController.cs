@@ -138,7 +138,7 @@ public class AccountController : Controller
     }
 
     [HttpPost]
-    public IActionResult EditAvatar(string profileImage)
+    public IActionResult EditAvatar(string profileImage, IFormFile customImage)
     {
         var userId = HttpContext.Session.GetInt32("UserId");
 
@@ -150,7 +150,39 @@ public class AccountController : Controller
 
         var user = _context.Users.Single(u => u.UserId == userId);
 
-        user.ProfileImage = profileImage;
+        if (customImage != null && customImage.Length > 0)
+        {
+            // Define the directory to save uploaded files
+            var uploadsDirectory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/customAvatars");
+
+            if (!Directory.Exists(uploadsDirectory))
+            {
+                Directory.CreateDirectory(uploadsDirectory);
+            }
+
+            // Ensure a unique filename
+            var fileName = Guid.NewGuid().ToString() + Path.GetExtension(customImage.FileName);
+            var filePath = Path.Combine(uploadsDirectory, fileName);
+
+            // Save the file to the server
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                customImage.CopyTo(stream);
+            }
+
+            // Update the user's profile image path
+            user.ProfileImage = $"/images/customAvatars/{fileName}";
+        }
+        else if (!string.IsNullOrEmpty(profileImage))
+        {
+            // Use the selected pre-defined avatar
+            user.ProfileImage = profileImage;
+        }
+        else
+        {
+            TempData["ErrorMessage"] = "No image selected or uploaded.";
+            return RedirectToAction("Index", "Games");
+        }
 
         try
         {
@@ -165,6 +197,7 @@ public class AccountController : Controller
         TempData["SuccessMessage"] = "Profile image updated successfully!";
         return RedirectToAction("Index", "Games");
     }
+
 
 }
 
