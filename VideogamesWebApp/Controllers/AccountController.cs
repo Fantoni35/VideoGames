@@ -3,6 +3,7 @@ using System.Security.Cryptography;
 using Microsoft.AspNetCore.Mvc;
 using VideogamesWebApp.Models;
 using GamesDataAccess;
+using System.Text.RegularExpressions;
 
 
 namespace VideogamesWebApp.Controllers;
@@ -50,6 +51,14 @@ public class AccountController : Controller
             return View("Login");
         }
 
+        // Validazione della password
+        var passwordRequirements = new Regex(@"^(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})");
+        if (!passwordRequirements.IsMatch(regPassword))
+        {
+            ViewData["RegisterError"] = "La password deve contenere almeno 8 caratteri, un numero e un carattere speciale.";
+            return View("Login");
+        }
+
         if (_context.Users.Any(u => u.Username == regUsername))
         {
             ViewData["RegisterError"] = "Username already exists.";
@@ -69,6 +78,7 @@ public class AccountController : Controller
         ViewData["RegisterSuccess"] = "Registration successful! You can now log in.";
         return View("Login");
     }
+
 
 
     private string HashPassword(string password)
@@ -100,6 +110,8 @@ public class AccountController : Controller
         return View();
     }
 
+
+
     [HttpPost]
     public IActionResult ChangePassword(string currentPassword, string newPassword, string confirmNewPassword)
     {
@@ -109,18 +121,25 @@ public class AccountController : Controller
             return RedirectToAction("Index", "Games");
         }
 
+        var passwordRequirements = new Regex(@"^(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})");
+        if (!passwordRequirements.IsMatch(newPassword))
+        {
+            TempData["ErrorMessage"] = "La password deve contenere almeno 8 caratteri, un numero e un carattere speciale.";
+            return RedirectToAction("Index", "Games");
+        }
+
         var userId = HttpContext.Session.GetInt32("UserId");
         if (userId == null)
         {
-            TempData["ErrorMessage"] = "User not found.";
-            return RedirectToAction("Login", "Account");
+            TempData["ErrorMessage"] = "User  not found.";
+            return RedirectToAction("Index", "Games");
         }
 
         var user = _context.Users.SingleOrDefault(u => u.UserId == userId);
         if (user == null)
         {
-            TempData["ErrorMessage"] = "User not found.";
-            return RedirectToAction("Login", "Account");
+            TempData["ErrorMessage"] = "User  not found.";
+            return RedirectToAction("Index", "Games");
         }
 
         if (!VerifyPasswordHash(currentPassword, user.PasswordHash))
@@ -129,13 +148,15 @@ public class AccountController : Controller
             return RedirectToAction("Index", "Games");
         }
 
-        // Aggiorna la password
         user.PasswordHash = HashPassword(newPassword);
         _context.SaveChanges();
 
         TempData["SuccessMessage"] = "Password changed successfully!";
         return RedirectToAction("Index", "Games");
     }
+
+
+
 
     [HttpPost]
     public IActionResult EditAvatar(string profileImage, IFormFile customImage)

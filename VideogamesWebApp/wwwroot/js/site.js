@@ -845,7 +845,7 @@ document.querySelector('.btn.btn-primary').addEventListener('click', function ()
     }
     // Nessuna immagine selezionata o caricata, mostra un avviso
     else {
-        alert('Per favore seleziona un\'immagine o carica un\'immagine personalizzata.');
+        alert('Please select an image or upload a custom image.');
     }
 });
 
@@ -853,6 +853,16 @@ document.querySelector('.btn.btn-primary').addEventListener('click', function ()
         const fileName = this.files && this.files.length > 0 ? this.files[0].name : 'No file chosen';
         document.getElementById('fileSelected').textContent = fileName;
     });
+
+document.getElementById('changePasswordForm').addEventListener('submit', function (event) {
+    const newPassword = document.getElementById('newPassword').value;
+    const passwordRequirements = new RegExp("^(?=.*[0-9])(?=.*[!#$%^&*])[A-Za-z0-9!#$%^&*]{8,}$");
+
+    if (!passwordRequirements.test(newPassword)) {
+        event.preventDefault(); // Impedisce l'invio del modulo
+        alert('The password must contain at least 8 characters, a number, and a special character.');
+    }
+});
 
 
 
