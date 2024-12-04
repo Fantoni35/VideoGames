@@ -1,40 +1,46 @@
-﻿const storeSearch = document.getElementById('storeSearch');
+﻿// Elementi HTML per la ricerca dei negozi
+const storeSearch = document.getElementById('storeSearch');
 const storeSearchResults = document.getElementById('storeSearchResults');
 const storeSearchError = document.getElementById('storeSearchError');
 const storeId = document.getElementById('storeId');
 
+// Elementi HTML per la ricerca delle piattaforme
 const platformSearch = document.getElementById('platformSearch');
 const platformSearchResults = document.getElementById('platformSearchResults');
 const platformSearchError = document.getElementById('platformSearchError');
 const platformId = document.getElementById('platformId');
 
+// Elementi HTML per la ricerca dei launcher
 const launcherSearch = document.getElementById('launcherSearch');
 const launcherSearchResults = document.getElementById('launcherSearchResults');
 const launcherSearchError = document.getElementById('launcherSearchError');
 const launcherId = document.getElementById('launcherId');
 
-
-
+// Funzionalità di ricerca per i negozi
 storeSearch.addEventListener('input', function () {
     const searchQuery = this.value.trim().toLowerCase();
     if (searchQuery.length > 0) {
+        // Richiesta AJAX per cercare i negozi basata sulla query inserita
         fetch(`/Games/SearchStores?query=${encodeURIComponent(searchQuery)}`)
             .then(response => response.json())
             .then(stores => {
                 storeSearchResults.innerHTML = '';
                 if (stores.length > 0) {
+                    // Mostra i risultati della ricerca
                     stores.forEach(store => {
                         const div = document.createElement('div');
                         div.className = 'search-result-item';
                         div.textContent = store.storeName;
                         div.dataset.id = store.storeId;
                         div.addEventListener('mousedown', () => {
+                            // Selezione di un negozio dalla lista dei suggerimenti
                             selectSuggestion(storeSearch, storeId, div, { value: true }, storeSearchError);
                         });
                         storeSearchResults.appendChild(div);
                     });
                     storeSearchResults.style.display = 'block';
                 } else {
+                    // Nasconde i risultati se non ci sono match
                     storeSearchResults.style.display = 'none';
                 }
             });
@@ -43,9 +49,11 @@ storeSearch.addEventListener('input', function () {
     }
 });
 
+// Funzionalità di ricerca per le piattaforme
 platformSearch.addEventListener('input', function () {
     const searchQuery = this.value.trim().toLowerCase();
     if (searchQuery.length > 0) {
+        // Richiesta AJAX per cercare piattaforme basata sulla query inserita
         fetch(`/Games/SearchPlatforms?query=${encodeURIComponent(searchQuery)}`)
             .then(response => response.json())
             .then(platforms => {
@@ -57,6 +65,7 @@ platformSearch.addEventListener('input', function () {
                         div.textContent = platform.platformName;
                         div.dataset.id = platform.platformId;
                         div.addEventListener('mousedown', () => {
+                            // Selezione di una piattaforma dalla lista dei suggerimenti
                             selectSuggestion(platformSearch, platformId, div, { value: true }, platformSearchError);
                         });
                         platformSearchResults.appendChild(div);
@@ -71,9 +80,11 @@ platformSearch.addEventListener('input', function () {
     }
 });
 
+// Funzionalità di ricerca per i launcher
 launcherSearch.addEventListener('input', function () {
     const searchQuery = this.value.trim().toLowerCase();
     if (searchQuery.length > 0) {
+        // Richiesta AJAX per cercare launcher basata sulla query inserita
         fetch(`/Games/SearchLaunchers?query=${encodeURIComponent(searchQuery)}`)
             .then(response => response.json())
             .then(launchers => {
@@ -85,6 +96,7 @@ launcherSearch.addEventListener('input', function () {
                         div.textContent = launcher.launcherName;
                         div.dataset.id = launcher.launcherId;
                         div.addEventListener('mousedown', () => {
+                            // Selezione di un launcher dalla lista dei suggerimenti
                             selectSuggestion(launcherSearch, launcherId, div, { value: true }, launcherSearchError);
                         });
                         launcherSearchResults.appendChild(div);
@@ -99,6 +111,7 @@ launcherSearch.addEventListener('input', function () {
     }
 });
 
+// Eventi per il caricamento iniziale della pagina
 document.addEventListener('DOMContentLoaded', function () {
     const applyFiltersButton = document.getElementById('applyFiltersButton');
     const resetFiltersButton = document.getElementById('resetFiltersButton');
@@ -106,6 +119,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const activeFiltersContainer = document.getElementById('activeFiltersContainer');
     const activeFiltersText = document.getElementById('activeFiltersText');
 
+    // Aggiorna la lista dei filtri attivi
     function updateActiveFilters(storeName = null, platformName = null, launcherName = null) {
         const activeFilters = [];
 
@@ -116,15 +130,15 @@ document.addEventListener('DOMContentLoaded', function () {
         activeFiltersText.textContent = activeFilters.length > 0 ? `Filtered by: ${activeFilters.join(' | ')}` : 'Filtered by:';
 
         if (activeFilters.length > 0) {
-            activeFiltersContainer.style.display = 'block';  
+            activeFiltersContainer.style.display = 'block';
         } else {
-            activeFiltersContainer.style.display = 'none';  
+            activeFiltersContainer.style.display = 'none';
         }
     }
 
-    // Function to reset filters and update the stats
+    // Funzione per resettare i filtri
     function resetFilters() {
-        // Reset input fields
+        // Resetta i campi di input
         storeSearch.value = '';
         storeId.value = '';
         platformSearch.value = '';
@@ -132,25 +146,21 @@ document.addEventListener('DOMContentLoaded', function () {
         launcherSearch.value = '';
         launcherId.value = '';
 
-        // Hide search results
+        // Nasconde i risultati della ricerca e i filtri attivi
         storeSearchResults.style.display = 'none';
         platformSearchResults.style.display = 'none';
         launcherSearchResults.style.display = 'none';
-
-        // Hide the active filters text
         activeFiltersContainer.style.display = 'none';
-
-        // Reset the "Filtered by" label to just "Filtered by:"
         activeFiltersText.textContent = 'Filtered by:';
 
-        // AJAX request to reset the statistics
+        // Richiede al server di ripristinare le statistiche
         fetch('/Games/ViewStats')
             .then(response => response.text())
             .then(html => {
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(html, 'text/html');
 
-                // Update the statistics dynamically
+                // Aggiorna dinamicamente le statistiche nella pagina
                 document.getElementById('totalSpentStat').textContent =
                     doc.getElementById('totalSpentStat').textContent;
                 document.getElementById('totalGamesStat').textContent =
@@ -166,47 +176,48 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.getElementById('mostExpensiveGameStat').textContent =
                     doc.getElementById('mostExpensiveGameStat').textContent;
 
-                // Update the tables
+                // Aggiorna le tabelle
                 document.getElementById('daysOfWeekTableBody').innerHTML =
                     doc.getElementById('daysOfWeekTableBody').innerHTML;
                 document.getElementById('monthsTableBody').innerHTML =
                     doc.getElementById('monthsTableBody').innerHTML;
             })
             .catch(error => {
-                console.error('Error resetting statistics:', error);
+                console.error('Errore durante il ripristino delle statistiche:', error);
                 alert('Errore durante il ripristino delle statistiche');
             });
     }
 
-    // Listener for the reset button
+    // Listener per il pulsante di reset
     resetFiltersButton.addEventListener('click', function () {
         resetFilters();
     });
 
+    // Listener per il pulsante di applicazione dei filtri
     applyFiltersButton.addEventListener('click', function () {
         const storeIdValue = document.getElementById('storeId').value || null;
         const platformIdValue = document.getElementById('platformId').value || null;
         const launcherIdValue = document.getElementById('launcherId').value || null;
 
-        // Get the names of selected filters
+        // Recupera i nomi dei filtri selezionati
         const storeName = storeIdValue ? storeSearch.value : null;
         const platformName = platformIdValue ? platformSearch.value : null;
         const launcherName = launcherIdValue ? launcherSearch.value : null;
 
-        // Construct the URL with filter parameters
+        // Costruisce l'URL con i parametri dei filtri
         const url = `/Games/ViewStats?${storeIdValue ? `storeId=${storeIdValue}&` : ''}${platformIdValue ? `platformId=${platformIdValue}&` : ''}${launcherIdValue ? `launcherId=${launcherIdValue}` : ''}`;
 
-        // Update active filters before applying them
+        // Aggiorna i filtri attivi prima di applicarli
         updateActiveFilters(storeName, platformName, launcherName);
 
-        // AJAX request to update the statistics
+        // Richiesta AJAX per aggiornare le statistiche
         fetch(url)
             .then(response => response.text())
             .then(html => {
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(html, 'text/html');
 
-                // Update the statistics dynamically
+                // Aggiorna dinamicamente le statistiche
                 document.getElementById('totalSpentStat').textContent =
                     doc.getElementById('totalSpentStat').textContent;
                 document.getElementById('totalGamesStat').textContent =
@@ -222,56 +233,52 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.getElementById('mostExpensiveGameStat').textContent =
                     doc.getElementById('mostExpensiveGameStat').textContent;
 
-                // Update the tables
+                // Aggiorna le tabelle
                 document.getElementById('daysOfWeekTableBody').innerHTML =
                     doc.getElementById('daysOfWeekTableBody').innerHTML;
                 document.getElementById('monthsTableBody').innerHTML =
                     doc.getElementById('monthsTableBody').innerHTML;
 
-                // Close the modal after applying filters
+                // Chiude il modal dopo aver applicato i filtri
                 filterModal.hide();
             })
             .catch(error => {
-                console.error('Error updating statistics:', error);
+                console.error('Errore durante l\'aggiornamento delle statistiche:', error);
                 alert('Errore durante l\'aggiornamento delle statistiche');
             });
     });
-
-    // Reset fields and hide results when the modal is closed
-    document.getElementById('filterModal').addEventListener('hidden.bs.modal', function () {
-        storeSearch.value = '';
-        storeId.value = '';
-        platformSearch.value = '';
-        platformId.value = '';
-        launcherSearch.value = '';
-        launcherId.value = '';
-
-        // Hide the search results
-        storeSearchResults.style.display = 'none';
-        platformSearchResults.style.display = 'none';
-        launcherSearchResults.style.display = 'none';
-
-    });
 });
 
+// crea il pdf con le stats
 document.getElementById('createPdfButton').addEventListener('click', function () {
-
-    // Crea un nuovo elemento per il titolo
+    
     const titleElement = document.createElement('div');
     titleElement.textContent = 'Recap Stats';
-    titleElement.style.textAlign = 'center'; // Centra il titolo
-    titleElement.style.marginBottom = '20px'; // Aggiungi margine sotto il titolo
-    titleElement.style.fontSize = '24px'; // Imposta la dimensione del font
-    titleElement.style.fontWeight = 'bold'; // Rendi il titolo in grassetto
 
-    // Seleziona l'elemento da convertire
+    
+    titleElement.style.textAlign = 'center'; 
+    titleElement.style.marginBottom = '20px'; 
+    titleElement.style.fontSize = '32px'; 
+    titleElement.style.fontWeight = 'bold'; 
+    titleElement.style.lineHeight = '1.2'; 
+
+   
     const element = document.getElementById('statsContainer');
 
-    // Clona l'elemento per non modificarlo nel DOM
+    
     const clone = element.cloneNode(true);
 
-    // Aggiungi il titolo all'inizio del clone
-    clone.insertBefore(titleElement, clone.firstChild);
+    
+    const pdfContent = document.createElement('div');
+    pdfContent.appendChild(titleElement); 
+    pdfContent.appendChild(clone);
+
+    
+    const daysOfWeekTable = document.getElementById('daysOfWeekTable').cloneNode(true);
+    const monthsTable = document.getElementById('monthsTable').cloneNode(true);
+
+    pdfContent.appendChild(daysOfWeekTable); 
+    pdfContent.appendChild(monthsTable); 
 
     const options = {
         margin: 1,
@@ -281,6 +288,7 @@ document.getElementById('createPdfButton').addEventListener('click', function ()
         jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
     };
 
-    // Genera il PDF dal clone
-    html2pdf().from(clone).set(options).save();
+    
+    html2pdf().from(pdfContent).set(options).save();
 });
+
