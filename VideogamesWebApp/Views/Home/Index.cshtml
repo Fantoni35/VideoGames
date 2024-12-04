@@ -1,5 +1,4 @@
 ﻿@model List<VideogamesWebApp.Models.GameTransactionsViewModel>
-
 @{
     var image = ViewData["ProfileImage"];
 }
@@ -14,12 +13,11 @@
                 @{
                     if (image != null)
                     {
-                        <img id="userProfileImage" src="@image" alt="Profile Image" class="img-fluid rounded-circle" style="width: 3rem; height: 3rem;" />
+                        <img id="userProfileImage" src="@image" alt="Profile Image" class="img-fluid rounded-circle" style="width: 5rem; height: 5rem;" />
                     }
                     else
                     {
-                        
-                        <img id="userProfileImage" src="/images/utenteStock.png" alt="Profile Image" class="img-fluid rounded-circle" style="width: 3rem; height: 3rem;" />
+                        <img id="userProfileImage" src="/images/utenteStock.png" alt="Profile Image" class="img-fluid rounded-circle" style="width: 5rem; height: 5rem;" />
                     }
                 }
             </button>
@@ -39,7 +37,6 @@
         </form>
     </div>
 
-    
     <!-- Modal for Edit Avatar -->
     <div class="modal fade" id="editAvatarModal" tabindex="-1" aria-labelledby="editAvatarModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
@@ -86,9 +83,6 @@
         </div>
     </div>
 
-
-
-
     <form method="get" asp-controller="Games" asp-action="Index" class="d-flex mt-3 align-items-center gap-2">
         <div class="input-group w-25">
             <input maxlength="30" type="text" id="searchQuery" name="searchQuery" class="form-control"
@@ -100,6 +94,7 @@
         </button>
     </form>
 </div>
+
 <!-- Modal per la modifica della password -->
 <div class="modal fade" id="editAccountModal" tabindex="-1" aria-labelledby="editAccountModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -498,7 +493,7 @@
             @{
                 int totalPages = (int)ViewData["TotalPages"];
                 int currentPage = (int)ViewData["CurrentPage"];
-                int range = 2; // Numero di pagine prima e dopo la corrente da mostrare
+                int range = 2; 
 
                 if (currentPage > 1)
                 {
@@ -560,7 +555,7 @@
 
     <div id="toastContainer" class="position-fixed bottom-0 end-0 p-3" style="z-index: 1100;"></div>
 </div>
-</div>
+
 
 
 <script src="~/js/site.js"></script>

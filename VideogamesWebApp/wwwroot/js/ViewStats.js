@@ -13,6 +13,8 @@ const launcherSearchResults = document.getElementById('launcherSearchResults');
 const launcherSearchError = document.getElementById('launcherSearchError');
 const launcherId = document.getElementById('launcherId');
 
+
+
 storeSearch.addEventListener('input', function () {
     const searchQuery = this.value.trim().toLowerCase();
     if (searchQuery.length > 0) {
@@ -250,4 +252,35 @@ document.addEventListener('DOMContentLoaded', function () {
         launcherSearchResults.style.display = 'none';
 
     });
+});
+
+document.getElementById('createPdfButton').addEventListener('click', function () {
+
+    // Crea un nuovo elemento per il titolo
+    const titleElement = document.createElement('div');
+    titleElement.textContent = 'Recap Stats';
+    titleElement.style.textAlign = 'center'; // Centra il titolo
+    titleElement.style.marginBottom = '20px'; // Aggiungi margine sotto il titolo
+    titleElement.style.fontSize = '24px'; // Imposta la dimensione del font
+    titleElement.style.fontWeight = 'bold'; // Rendi il titolo in grassetto
+
+    // Seleziona l'elemento da convertire
+    const element = document.getElementById('statsContainer');
+
+    // Clona l'elemento per non modificarlo nel DOM
+    const clone = element.cloneNode(true);
+
+    // Aggiungi il titolo all'inizio del clone
+    clone.insertBefore(titleElement, clone.firstChild);
+
+    const options = {
+        margin: 1,
+        filename: 'stats.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+    };
+
+    // Genera il PDF dal clone
+    html2pdf().from(clone).set(options).save();
 });

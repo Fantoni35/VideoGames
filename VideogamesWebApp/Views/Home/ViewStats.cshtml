@@ -17,6 +17,9 @@
     <button type="button" id="resetFiltersButton" class="btn btn-warning">
         <i class="fas fa-times-circle"></i> Reset Filters
     </button>
+    <button type="button" id="createPdfButton" class="btn btn-success">
+        <i class="fas fa-file-pdf"></i> Create PDF
+    </button>
 
     <div id="activeFiltersContainer" class="mb-3">
         <span class="badge bg-info text-dark" id="activeFiltersText">
@@ -105,7 +108,7 @@
         </div>
     </div>
 
-
+    <br />
     <div class="table-container">
         <p><strong><i class="fas fa-calendar-week"></i> Shopping by days of the week:</strong></p>
         <div class="table-responsive">
@@ -173,6 +176,8 @@
             </table>
         </div>
     </div>
+</div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <script src="~/js/ViewStats.js"></script>

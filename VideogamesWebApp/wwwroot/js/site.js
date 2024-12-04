@@ -725,7 +725,7 @@ document.addEventListener("DOMContentLoaded", function () {
 // Aggiunge un listener all'input del campo storeSearch per validare il valore inserito
 document.getElementById('storeSearch').addEventListener('input', function () {
     const inputValue = this.value; // Ottiene il valore corrente dell'input
-    validateStoreInput(inputValue); // Valida il valore inserito
+    validateStoreInput(inputValue); 
 });
 
 // Funzione per validare l'input del negozio
@@ -746,25 +746,25 @@ function validateStoreInput(inputValue) {
 
 // Funzione per mostrare i suggerimenti del dropdown
 function showDropdownSuggestions() {
-    const storeSearchResults = document.getElementById('storeSearchResults'); // Elemento dropdown dei risultati
+    const storeSearchResults = document.getElementById('storeSearchResults'); 
     storeSearchResults.style.display = 'block'; // Mostra il dropdown
 }
 
 // Aggiunge un listener all'input del campo storeSearch per mostrare i suggerimenti del dropdown
 document.getElementById('storeSearch').addEventListener('input', function () {
-    showDropdownSuggestions(); // Mostra i suggerimenti
+    showDropdownSuggestions(); 
 });
 
 // Aggiunge un listener che inizializza il campo della data di acquisto quando la pagina è caricata
 document.addEventListener("DOMContentLoaded", function () {
-    const purchaseDateInput = document.getElementById("purchaseDate"); // Campo della data di acquisto
-    const today = new Date().toISOString().split("T")[0]; // Ottiene la data odierna 
-    purchaseDateInput.value = today; // Imposta il valore del campo data con la data odierna
+    const purchaseDateInput = document.getElementById("purchaseDate"); 
+    const today = new Date().toISOString().split("T")[0]; 
+    purchaseDateInput.value = today;
 });
 
 // Funzione asincrona per controllare se un acquisto è duplicato
 async function checkDuplicatePurchase(event) {
-    event.preventDefault(); // Previene l'invio predefinito del modulo
+    event.preventDefault(); 
 
     // Ottiene i valori dei campi necessari
     const gameId = document.getElementById("gameId").value;
@@ -774,19 +774,19 @@ async function checkDuplicatePurchase(event) {
 
     // Controlla che tutti i campi siano compilati
     if (!gameId || !storeId || !platformId || !launcherId) {
-        alert("Please select a valid game, store, platform, and launcher."); // Messaggio di errore
+        alert("Please select a valid game, store, platform, and launcher."); 
         return false; // Blocca il processo
     }
 
     try {
         // Richiesta al server per verificare acquisti duplicati
         const response = await fetch(`/Games/CheckDuplicatePurchase?gameId=${gameId}&storeId=${storeId}`, {
-            method: "GET", // Metodo GET per la richiesta
+            method: "GET", 
             headers: {
-                "Content-Type": "application/json" // Tipo di contenuto JSON
+                "Content-Type": "application/json" 
             }
         });
-        const result = await response.json(); // Converte la risposta in JSON
+        const result = await response.json(); 
 
         // Se l'acquisto è duplicato, mostra un messaggio di conferma
         if (result.isDuplicate) {
@@ -802,8 +802,8 @@ async function checkDuplicatePurchase(event) {
             return false; // Blocca il processo successivo
         }
     } catch (error) {
-        console.error("Error checking duplicate purchase:", error); // Log dell'errore in console
-        alert("An error occurred while checking duplicate purchases."); // Messaggio di errore per l'utente
+        console.error("Error checking duplicate purchase:", error); 
+        alert("An error occurred while checking duplicate purchases."); 
         return false; // Blocca il processo
     }
 
@@ -812,7 +812,7 @@ async function checkDuplicatePurchase(event) {
     return true; // Conferma il completamento
 }
 
-
+    // Per cambiare l'immagine dell'utente
 document.querySelector('.btn.btn-primary').addEventListener('click', function () {
     // Ottieni il valore dell'immagine del profilo selezionata dai pulsanti radio
     const selectedImage = document.querySelector('input[name="profileImage"]:checked');
@@ -824,7 +824,7 @@ document.querySelector('.btn.btn-primary').addEventListener('click', function ()
         // Aggiorna l'immagine del profilo con l'avatar selezionato
         profileImage.src = selectedImage.value;
 
-        // Chiudi il modal dopo aver salvato le modifiche
+        
         var modal = bootstrap.Modal.getInstance(document.getElementById('editAvatarModal'));
         modal.hide();
     }
@@ -833,15 +833,14 @@ document.querySelector('.btn.btn-primary').addEventListener('click', function ()
         const fileReader = new FileReader();
 
         fileReader.onload = function (event) {
-            // Imposta l'anteprima dell'immagine caricata
+            
             profileImage.src = event.target.result;
-
-            // Chiudi il modal dopo aver aggiornato l'anteprima
+            
             var modal = bootstrap.Modal.getInstance(document.getElementById('editAvatarModal'));
             modal.hide();
         };
 
-        // Leggi il file caricato come URL dei dati
+        // file caricato come URL dei dati
         fileReader.readAsDataURL(customImageInput.files[0]);
     }
     // Nessuna immagine selezionata o caricata, mostra un avviso
