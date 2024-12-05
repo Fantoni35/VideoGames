@@ -1,7 +1,7 @@
 ﻿using GamesDataAccess;
 using Microsoft.EntityFrameworkCore;
 using VideogamesWebApp.Models;
-
+using Newtonsoft.Json;
 public static class DbInitializer
 {
     public static void Initialize(DatabaseContext context)
@@ -130,16 +130,34 @@ public static class DbInitializer
             };
             context.Launchers.AddRange(launchers);
         }
+        // Aggiungi giochi dal file JSON
+        if (!context.Games.Any())
+        {
+            var games = ReadGamesFromJson("games.json");
+            context.Games.AddRange(games);
+        }
+
         context.SaveChanges();
     }
+    private static List<Game> ReadGamesFromJson(string filePath)
+    {
+        var jsonData = File.ReadAllText(filePath);
+        var games = JsonConvert.DeserializeObject<List<Game>>(jsonData);
+
+        // Imposta IsImported a true per i giochi importati dal JSON
+        foreach (var game in games)
+        {
+            game.IsImported = true;
+
+            // Imposta un valore predefinito per CoverImageUrl se è NULL
+            if (string.IsNullOrEmpty(game.CoverImageUrl))
+            {
+                game.CoverImageUrl = "/images/utenteStock.png"; // Imposta un'immagine predefinita
+            }
+        }
+
+        return games;
+    }
+
 }
-
-
-
-
-
-
-
-
-
 

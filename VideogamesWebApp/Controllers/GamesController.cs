@@ -138,8 +138,14 @@ public class GamesController : Controller
 
     public IActionResult ViewAllGames(int pageNumber = 1, string sortOrder = "GameNameAsc")
     {
-        int pageSize = 7;
+        int pageSize = 5;
         var username = GetUsername();
+
+        // Ensure the games are initialized (if not already in the database)
+        if (!_dbContext.Games.Any())
+        {
+            DbInitializer.Initialize(_dbContext); // Initialize games from the JSON file if the database is empty
+        }
 
         IQueryable<GameViewModel> allGamesQuery = _dbContext.Games
             .Select(game => new GameViewModel
@@ -149,9 +155,13 @@ public class GamesController : Controller
                 GameDescription = game.GameDescription,
                 MainGameId = game.MainGameId,
                 MainGameName = game.MainGame != null ? game.MainGame.GameName : null,
-                DLCCount = _dbContext.Games.Count(dlc => dlc.MainGameId == game.GameId)
+                DLCCount = _dbContext.Games.Count(dlc => dlc.MainGameId == game.GameId),
+                IsImported = game.IsImported,
+                CoverImageUrl = game.CoverImageUrl
+
             });
-        // Applichiamo il sorting in base al sortOrder selezionato
+
+        // Apply sorting based on the selected sort order
         allGamesQuery = sortOrder switch
         {
             "GameNameAsc" => allGamesQuery.OrderBy(game => game.GameName),
@@ -160,7 +170,7 @@ public class GamesController : Controller
             "GameDescriptionDesc" => allGamesQuery.OrderByDescending(game => game.GameDescription),
             "DLCCountAsc" => allGamesQuery.OrderBy(game => game.DLCCount),
             "DLCCountDesc" => allGamesQuery.OrderByDescending(game => game.DLCCount),
-            _ => allGamesQuery.OrderBy(game => game.GameName) // Default su alfabetico
+            _ => allGamesQuery.OrderBy(game => game.GameName) // Default alphabetical order
         };
 
         var mainGames = _dbContext.Games
@@ -178,13 +188,13 @@ public class GamesController : Controller
             .ToList();
 
         var gamesWithDLCs = _dbContext.Games
-      .Where(g => g.MainGameId == null)
-      .Select(g => new
-      {
-          GameId = g.GameId,
-          HasDLCs = _dbContext.Games.Any(dlc => dlc.MainGameId == g.GameId)
-      })
-              .ToDictionary(g => g.GameId, g => g.HasDLCs);
+            .Where(g => g.MainGameId == null)
+            .Select(g => new
+            {
+                GameId = g.GameId,
+                HasDLCs = _dbContext.Games.Any(dlc => dlc.MainGameId == g.GameId)
+            })
+            .ToDictionary(g => g.GameId, g => g.HasDLCs);
 
         ViewBag.GamesWithDLCs = gamesWithDLCs;
 
@@ -192,8 +202,10 @@ public class GamesController : Controller
         ViewData["TotalPages"] = (int)Math.Ceiling((double)totalGames / pageSize);
         ViewData["CurrentPage"] = pageNumber;
         ViewData["CurrentSortOrder"] = sortOrder;
+
         return View("~/Views/Home/ViewAllGames.cshtml", paginatedGames);
     }
+
     public IActionResult ViewStats(int? storeId, int? platformId, int? launcherId)
     {
         var userId = GetUserId();
@@ -336,7 +348,10 @@ public class GamesController : Controller
             {
                 GameName = gameName,
                 GameDescription = gameDescription,
-                MainGameId = mainGameId
+                MainGameId = mainGameId,
+                IsImported = false // Imposta IsImported a false per i giochi aggiunti dall'utente
+
+
             };
             _dbContext.Games.Add(game);
             await _dbContext.SaveChangesAsync();

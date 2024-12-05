@@ -1,5 +1,4 @@
-﻿
-@model List<VideogamesWebApp.Models.GameViewModel>
+﻿@model List<VideogamesWebApp.Models.GameViewModel>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 <div class="container mt-4">
@@ -28,109 +27,75 @@
         </div>
     }
 
-    <div class="table-responsive">
-        <table class="table table-games table-striped table-hover">
-            <thead>
-                @{
-                    var totalPages = (int)ViewData["TotalPages"];
-                    var currentPage = (int)ViewData["CurrentPage"];
-                    var currentSortOrder = (string)ViewData["CurrentSortOrder"];
-                }
+    <div class="row row-cols-1 row-cols-md-5 g-4">
+        @foreach (var game in Model)
+        {
+            <div class="col">
+                <div class="card h-100 game-card">
+                    <img src="@game.CoverImageUrl" class="card-img-top cover-image" alt="@game.GameName" />
+                    <div class="card-body">
+                        <h5 class="card-title">@game.GameName</h5>
+                        <p class="card-text text-muted">@game.GameDescription</p>
 
-                <tr>
-                    <th scope="col">
-                        <div class="table-header-link-container">
-                            <span>Game Name</span>
-                            <span class="table-header-icons">
-                                <a href="@Url.Action("ViewAllGames", new { sortOrder = "GameNameAsc", pageNumber = currentPage })" class="table-header-icon-link">
-                                    <i class="fas fa-sort-up table-header-icon @(currentSortOrder == "GameNameAsc" ? "active" : "")"></i>
-                                </a>
-                                <a href="@Url.Action("ViewAllGames", new { sortOrder = "GameNameDesc", pageNumber = currentPage })" class="table-header-icon-link">
-                                    <i class="fas fa-sort-down table-header-icon @(currentSortOrder == "GameNameDesc" ? "active" : "")"></i>
-                                </a>
-                            </span>
+                        <div class="game-details">
+                            <div class="detail-item">
+                                <strong>Main Game:</strong>
+                                @(game.MainGameId.HasValue ? game.MainGameName : "-")
+                            </div>
+                            <div class="detail-item">
+                                <strong>DLC Count:</strong>
+                                @if (game.MainGameId == null)
+                                {
+                                    <span class="badge bg-primary">@game.DLCCount</span>
+                                }
+                                else
+                                {
+                                    <span>-</span>
+                                }
+                            </div>
                         </div>
-                    </th>
 
-                    <th scope="col">
-                        <div class="table-header-link-container">
-                            <span>Description</span>
-                            <span class="table-header-icons">
-                                <a href="@Url.Action("ViewAllGames", new { sortOrder = "GameDescriptionAsc", pageNumber = currentPage })" class="table-header-icon-link">
-                                    <i class="fas fa-sort-up table-header-icon @(currentSortOrder == "GameDescriptionAsc" ? "active" : "")"></i>
-                                </a>
-                                <a href="@Url.Action("ViewAllGames", new { sortOrder = "GameDescriptionDesc", pageNumber = currentPage })" class="table-header-icon-link">
-                                    <i class="fas fa-sort-down table-header-icon @(currentSortOrder == "GameDescriptionDesc" ? "active" : "")"></i>
-                                </a>
-                            </span>
-                        </div>
-                    </th>
-                   
-                    <th scope="col">Is DLC of:</th>
-                    <th scope="col">
-                        <div class="table-header-link-container">
-                            <span>
-                                Number of DLCs
-                            </span>
-                            <span class="table-header-icons">
-                                <a href="@Url.Action("ViewAllGames", new { sortOrder = "DLCCountAsc", pageNumber = currentPage })" class="table-header-icon-link">
-                                    <i class="fas fa-sort-up table-header-icon @(currentSortOrder == "DLCCountAsc" ? "active" : "")"></i>
-                                </a>
-                                <a href="@Url.Action("ViewAllGames", new { sortOrder = "DLCCountDesc", pageNumber = currentPage })" class="table-header-icon-link">
-                                    <i class="fas fa-sort-down table-header-icon @(currentSortOrder == "DLCCountDesc" ? "active" : "")"></i>
-                                </a>
-                            </span>
-                        </div>
-                    </th>
-                   
-                    <th scope="col">List of DLC:</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var game in Model)
-                {
-                    <tr>
-                        <td><strong>@game.GameName</strong></td>
-                        <td>@game.GameDescription</td>
-                        <td>@(game.MainGameId.HasValue ? game.MainGameName : "-")</td>
-                        <td>
-                            @if (game.MainGameId == null)
-                            {
-                                <span class="badge bg-primary">@game.DLCCount</span>
-                            }
-                            else
-                            {
-                                <span>-</span>
-                            }
-                        </td>
-                        <td>
+                        <div class="card-actions mt-3">
                             @{
-                                bool hasDLCs = ViewBag.GamesWithDLCs != null && ViewBag.GamesWithDLCs.ContainsKey(game.GameId) && ViewBag.GamesWithDLCs[game.GameId];
+                                bool hasDLCs = ViewBag.GamesWithDLCs != null &&
+                                ViewBag.GamesWithDLCs.ContainsKey(game.GameId) &&
+                                ViewBag.GamesWithDLCs[game.GameId];
                             }
                             @if (hasDLCs)
                             {
-                                <button class=" btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#dlcModal" onclick="loadDLCs('@game.GameId','@game.GameName')"
+                                <button class="btn btn-info btn-sm"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#dlcModal"
+                                        onclick="loadDLCs('@game.GameId','@game.GameName')"
                                         title="View DLCs">
                                     <i class="fas fa-eye"></i> View DLCs
                                 </button>
                             }
-                        </td>
-                        <td>
-                            <form asp-action="DeleteAllGame" asp-controller="Games" method="post" style="display:inline;">
-                                <input type="hidden" name="gameId" value="@game.GameId" />
-                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this game?');">
-                                    <i class="fas fa-trash-alt"></i> Delete Game
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+
+                            @if (!game.IsImported)
+                            {
+                                <form asp-action="DeleteAllGame" asp-controller="Games" method="post" class="d-inline">
+                                    <input type="hidden" name="gameId" value="@game.GameId" />
+                                    <button type="submit" class="btn btn-danger btn-sm"
+                                            onclick="return confirm('Are you sure you want to delete this game?');">
+                                        <i class="fas fa-trash-alt"></i> Delete
+                                    </button>
+                                </form>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
     </div>
+
     <!-- Pagination controls -->
-    <nav aria-label="Page navigation">
+    <nav aria-label="Page navigation" class="d-flex justify-content-center mt-4">
+        @{
+            var totalPages = ViewData["TotalPages"] != null ? (int)ViewData["TotalPages"] : 1;
+            var currentPage = ViewData["CurrentPage"] != null ? (int)ViewData["CurrentPage"] : 1;
+            var currentSortOrder = ViewData["CurrentSortOrder"] as string ?? "GameNameAsc";
+        }
         <ul class="pagination custom-pagination">
             @{
                 if (currentPage > 1)
@@ -255,7 +220,7 @@
                 <div class="modal-body">
                     <ul id="dlcList" class=" list-group list-group-flush"></ul>
 
-                    <!-- Paginazione -->
+                    <!-- Pagination -->
                     <nav class="mt-3">
                         <ul id="dlcPagination" class="pagination justify-content-center"></ul>
                     </nav>
@@ -274,5 +239,6 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script src="~/js/ViewAllGames.js"></script>
+
 
 

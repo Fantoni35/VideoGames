@@ -23,6 +23,10 @@ namespace VideogamesWebApp.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("CoverImageUrl")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("GameDescription")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -32,6 +36,9 @@ namespace VideogamesWebApp.Migrations
                         .IsRequired()
                         .HasMaxLength(25)
                         .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsImported")
+                        .HasColumnType("INTEGER");
 
                     b.Property<int?>("MainGameId")
                         .HasColumnType("INTEGER");

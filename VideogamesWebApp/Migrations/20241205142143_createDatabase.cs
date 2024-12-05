@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace VideogamesWebApp.Migrations
 {
     /// <inheritdoc />
-    public partial class InitalCreate : Migration
+    public partial class createDatabase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -19,7 +19,9 @@ namespace VideogamesWebApp.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     GameName = table.Column<string>(type: "TEXT", maxLength: 25, nullable: false),
                     GameDescription = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
-                    MainGameId = table.Column<int>(type: "INTEGER", nullable: true)
+                    MainGameId = table.Column<int>(type: "INTEGER", nullable: true),
+                    CoverImageUrl = table.Column<string>(type: "TEXT", nullable: false),
+                    IsImported = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {

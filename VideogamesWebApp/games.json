@@ -1,0 +1,620 @@
+[
+  {
+
+    "GameId": 1,
+    "GameName": "The Witcher 3: Wild Hunt",
+    "GameDescription": "An open-world RPG by CD Projekt Red",
+    "MainGameId": null,
+    "CoverImageUrl": "/images/imageGame2.jpg"
+  },
+  {
+    "GameId": 2,
+    "GameName": "Hearts of Stone",
+    "GameDescription": "DLC for The Witcher 3: Wild Hunt",
+    "MainGameId": 1
+  },
+  {
+    "GameId": 3,
+    "GameName": "Blood and Wine",
+    "GameDescription": "DLC for The Witcher 3: Wild Hunt",
+    "MainGameId": 1 
+  },
+  {
+    "GameId": 4,
+    "GameName": "Cyberpunk 2077",
+    "GameDescription": "A futuristic RPG by CD Projekt Red",
+    "MainGameId": null
+  },
+  {
+    "GameId": 5,
+    "GameName": "Phantom Liberty",
+    "GameDescription": "DLC for Cyberpunk 2077",
+    "MainGameId": 4
+  },
+  {
+    "GameId": 6,
+    "GameName": "Elden Ring",
+    "GameDescription": "An action RPG by FromSoftware",
+    "MainGameId": null
+  },
+  {
+    "GameId": 7,
+    "GameName": "Dark Souls III",
+    "GameDescription": "An action RPG by FromSoftware",
+    "MainGameId": null
+  },
+  {
+    "GameId": 8,
+    "GameName": "Ashes of Ariandel",
+    "GameDescription": "DLC for Dark Souls III",
+    "MainGameId": 7
+  },
+  {
+    "GameId": 9,
+    "GameName": "The Ringed City",
+    "GameDescription": "DLC for Dark Souls III",
+    "MainGameId": 7
+  },
+  {
+    "GameId": 10,
+    "GameName": "Grand Theft Auto V",
+    "GameDescription": "An open-world game by Rockstar",
+    "MainGameId": null
+  },
+  {
+    "GameId": 11,
+    "GameName": "Red Dead Redemption 2",
+    "GameDescription": "An open-world game by Rockstar",
+    "MainGameId": null
+  },
+  {
+    "GameId": 12,
+    "GameName": "Horizon Zero Dawn",
+    "GameDescription": "A futuristic open-world RPG by Guerrilla Games",
+    "MainGameId": null
+  },
+  {
+    "GameId": 13,
+    "GameName": "Frozen Wilds",
+    "GameDescription": "DLC for Horizon Zero Dawn",
+    "MainGameId": 12
+  },
+  {
+    "GameId": 14,
+    "GameName": "The Last of Us Part I",
+    "GameDescription": "An action-adventure game by Naughty Dog",
+    "MainGameId": null
+  },
+  {
+    "GameId": 15,
+    "GameName": "Left Behind",
+    "GameDescription": "DLC for The Last of Us Part I",
+    "MainGameId": 14
+  },
+  {
+    "GameId": 16,
+    "GameName": "The Last of Us Part II",
+    "GameDescription": "Sequel to The Last of Us Part I",
+    "MainGameId": null
+  },
+  {
+    "GameId": 17,
+    "GameName": "God of War",
+    "GameDescription": "A Norse mythology action game by Santa Monica Studio",
+    "MainGameId": null
+  },
+  {
+    "GameId": 18,
+    "GameName": "God of War Ragnarok",
+    "GameDescription": "Sequel to God of War",
+    "MainGameId": null
+  },
+  {
+    "GameId": 21,
+    "GameName": "Far Cry 5",
+    "GameDescription": "An open-world FPS by Ubisoft",
+    "MainGameId": null
+  },
+  {
+    "GameId": 22,
+    "GameName": "Lost on Mars",
+    "GameDescription": "DLC for Far Cry 5",
+    "MainGameId": 21
+  },
+  {
+    "GameId": 23,
+    "GameName": "New Dawn",
+    "GameDescription": "Standalone expansion for Far Cry 5",
+    "MainGameId": 21
+  },
+  {
+    "GameId": 24,
+    "GameName": "FIFA 22",
+    "GameDescription": "A football simulation game by EA",
+    "MainGameId": null
+  },
+  {
+    "GameId": 25,
+    "GameName": "FIFA 23",
+    "GameDescription": "Sequel to FIFA 22",
+    "MainGameId": null
+  },
+  {
+    "GameId": 26,
+    "GameName": "The Elder Scrolls V: Skyrim",
+    "GameDescription": "An open-world RPG by Bethesda",
+    "MainGameId": null
+  },
+  {
+    "GameId": 27,
+    "GameName": "Dawnguard",
+    "GameDescription": "DLC for The Elder Scrolls V: Skyrim",
+    "MainGameId": 26
+  },
+  {
+    "GameId": 28,
+    "GameName": "Hearthfire",
+    "GameDescription": "DLC for The Elder Scrolls V: Skyrim",
+    "MainGameId": 26
+  },
+  {
+    "GameId": 29,
+    "GameName": "Dragonborn",
+    "GameDescription": "DLC for The Elder Scrolls V: Skyrim",
+    "MainGameId": 26
+  },
+  {
+    "GameId": 30,
+    "GameName": "Minecraft",
+    "GameDescription": "A sandbox game by Mojang",
+    "MainGameId": null
+  },
+  {
+    "GameId": 31,
+    "GameName": "Caves and Cliffs",
+    "GameDescription": "DLC for Minecraft",
+    "MainGameId": 30
+  },
+  {
+    "GameId": 32,
+    "GameName": "The Sims 4",
+    "GameDescription": "A life simulation game by EA",
+    "MainGameId": null
+  },
+  {
+    "GameId": 33,
+    "GameName": "Cats and Dogs",
+    "GameDescription": "DLC for The Sims 4",
+    "MainGameId": 32
+  },
+  {
+    "GameId": 34,
+    "GameName": "City Living",
+    "GameDescription": "DLC for The Sims 4",
+    "MainGameId": 32
+  },
+  {
+    "GameId": 35,
+    "GameName": "Get to Work",
+    "GameDescription": "DLC for The Sims 4",
+    "MainGameId": 32
+  },
+  {
+    "GameId": 36,
+    "GameName": "Call of Duty: Warzone",
+    "GameDescription": "Battle royale game by Activision",
+    "MainGameId": null
+  },
+  {
+    "GameId": 37,
+    "GameName": "Vanguard",
+    "GameDescription": "DLC for Call of Duty: Warzone",
+    "MainGameId": 36
+  },
+  {
+    "GameId": 38,
+    "GameName": "The Witcher 2: Assassins of Kings",
+    "GameDescription": "A fantasy RPG by CD Projekt Red",
+    "MainGameId": null
+  },
+  {
+    "GameId": 39,
+    "GameName": "The Wild Hunt",
+    "GameDescription": "DLC for The Witcher 2: Assassins of Kings",
+    "MainGameId": 38
+  },
+  {
+    "GameId": 40,
+    "GameName": "Dead Space",
+    "GameDescription": "A survival horror game by EA",
+    "MainGameId": null
+  },
+  {
+    "GameId": 41,
+    "GameName": "Severed",
+    "GameDescription": "DLC for Dead Space",
+    "MainGameId": 40
+  },
+  {
+    "GameId": 42,
+    "GameName": "Far Cry 4",
+    "GameDescription": "An open-world FPS by Ubisoft",
+    "MainGameId": null
+  },
+  {
+    "GameId": 43,
+    "GameName": "Valley of the Yetis",
+    "GameDescription": "DLC for Far Cry 4",
+    "MainGameId": 42
+  },
+  {
+    "GameId": 44,
+    "GameName": "Watch Dogs 2",
+    "GameDescription": "An open-world action game by Ubisoft",
+    "MainGameId": null
+  },
+  {
+    "GameId": 45,
+    "GameName": "Human Conditions",
+    "GameDescription": "DLC for Watch Dogs 2",
+    "MainGameId": 44
+  },
+  {
+    "GameId": 46,
+    "GameName": "Hitman",
+    "GameDescription": "A stealth game by IO Interactive",
+    "MainGameId": null
+  },
+  {
+    "GameId": 47,
+    "GameName": "The Sarajevo Six",
+    "GameDescription": "DLC for Hitman",
+    "MainGameId": 46
+  },
+  {
+    "GameId": 48,
+    "GameName": "Grand Theft Auto IV",
+    "GameDescription": "An open-world game by Rockstar",
+    "MainGameId": null
+  },
+  {
+    "GameId": 49,
+    "GameName": "The Ballad of Gay Tony",
+    "GameDescription": "DLC for Grand Theft Auto IV",
+    "MainGameId": 48
+  },
+  {
+    "GameId": 50,
+    "GameName": "Portal 2",
+    "GameDescription": "A puzzle-platformer game by Valve",
+    "MainGameId": null
+  },
+  {
+    "GameId": 51,
+    "GameName": "Perpetual Testing Initiative",
+    "GameDescription": "DLC for Portal 2",
+    "MainGameId": 50,
+    "CoverImageUrl": "/images/Portal2_Perpetual_Testing_Initiative.jpg"
+  },
+  {
+    "GameId": 52,
+    "GameName": "DOOM Eternal",
+    "GameDescription": "A first-person shooter by id Software",
+    "MainGameId": null,
+    "CoverImageUrl": "/images/Doom_eternal.jpg"
+  },
+  {
+    "GameId": 53,
+    "GameName": "The Ancient Gods",
+    "GameDescription": "DLC for DOOM Eternal",
+    "MainGameId": 52,
+    "CoverImageUrl": "/images/The_Ancient_Gods.jpg"
+  },
+  {
+    "GameId": 54,
+    "GameName": "Fallout 4",
+    "GameDescription": "An open-world RPG by Bethesda",
+    "MainGameId": null,
+    "CoverImageUrl": "/images/FallOut4.jpg"
+
+  },
+  {
+    "GameId": 55,
+    "GameName": "Far Harbor",
+    "GameDescription": "DLC for Fallout 4",
+    "MainGameId": 54,
+    "CoverImageUrl": "/images/Far_Harbour.jpg"
+  },
+  {
+    "GameId": 56,
+    "GameName": "Dishonored 2",
+    "GameDescription": "A stealth action game by Bethesda",
+    "MainGameId": null,
+    "CoverImageUrl": "/images/Dishonored_2.jpg"
+  },
+  {
+    "GameId": 57,
+    "GameName": "The Death of the Outsider",
+    "GameDescription": "DLC for Dishonored 2",
+    "MainGameId": 56,
+    "CoverImageUrl": "/images/The_Death_of_the_Outsider.jpg"
+  },
+  {
+    "GameId": 58,
+    "GameName": "Dark Souls II",
+    "GameDescription": "An action RPG by FromSoftware",
+    "MainGameId": null,
+    "CoverImageUrl": "/images/souls.jpg"
+  },
+  {
+    "GameId": 59,
+    "GameName": "Crown of the Sunken King",
+    "GameDescription": "DLC for Dark Souls II",
+    "MainGameId": 58,
+    "CoverImageUrl": "/images/CrownoftheSunkenKing.jpg"
+  },
+  {
+    "GameId": 60,
+    "GameName": "Dark Souls Remastered",
+    "GameDescription": "A remastered version of Dark Souls",
+    "MainGameId": null,
+    "CoverImageUrl": "/images/Dark_Souls_Remastered.jpg"
+  },
+  {
+    "GameId": 61,
+    "GameName": "Artorias of the Abyss",
+    "GameDescription": "DLC for Dark Souls Remastered",
+    "MainGameId": 60,
+    "CoverImageUrl": "/images/Artorias_of_the_Abyss.jpg"
+  },
+  {
+    "GameId": 64,
+    "GameName": "Bloodborne",
+    "GameDescription": "A gothic action RPG by FromSoftware",
+    "MainGameId": null,
+    "CoverImageUrl": "/images/Bloodborne.jpg"
+  },
+  {
+    "GameId": 65,
+    "GameName": "The Old Hunters",
+    "GameDescription": "DLC for Bloodborne",
+    "MainGameId": 64,
+    "CoverImageUrl": "/images/The_Old_Hunters.jpg"
+  },
+  {
+    "GameId": 66,
+    "GameName": "Metal Gear Solid V: The Phantom Pain",
+    "GameDescription": "An open-world action game by Kojima Productions",
+    "MainGameId": null,
+    "CoverImageUrl": "/images/MetalSlug.jpg"
+  },
+  {
+    "GameId": 67,
+    "GameName": "Ground Zeroes",
+    "GameDescription": "DLC for Metal Gear Solid V: The Phantom Pain",
+    "MainGameId": 66,
+    "CoverImageUrl": "/images/groundZero.jpg"
+  },
+  {
+    "GameId": 68,
+    "GameName": "Mortal Kombat 11",
+    "GameDescription": "A fighting game by NetherRealm Studios",
+    "MainGameId": null,
+    "CoverImageUrl": "/images/Mortal Kombat 11.jpg"
+  },
+  {
+    "GameId": 69,
+    "GameName": "Aftermath",
+    "GameDescription": "DLC for Mortal Kombat 11",
+    "MainGameId": 68,
+    "CoverImageUrl": "/images/imageGame1.jpeg"
+  },
+  {
+    "GameId": 70,
+    "GameName": "Red Dead Redemption",
+    "GameDescription": "An open-world action game by Rockstar",
+    "MainGameId": null,
+    "CoverImageUrl": "/images/RDR.jpg"
+  },
+  {
+    "GameId": 71,
+    "GameName": "Undead Nightmare",
+    "GameDescription": "DLC for Red Dead Redemption",
+    "MainGameId": 70,
+    "CoverImageUrl": "/images/RDRUN.jpg"
+  },
+  {
+    "GameId": 72,
+    "GameName": "Uncharted 4: A Thief's End",
+    "GameDescription": "An action-adventure game by Naughty Dog",
+    "MainGameId": null,
+    "CoverImageUrl": "/images/Uncharted.jpg"
+  },
+  {
+    "GameId": 73,
+    "GameName": "Lost Legacy",
+    "GameDescription": "DLC for Uncharted 4: A Thief's End",
+    "MainGameId": 72,
+    "CoverImageUrl": "/images/Uncharted.jpg"
+  },
+  {
+    "GameId": 74,
+    "GameName": "The Division 2",
+    "GameDescription": "A third-person shooter by Ubisoft",
+    "MainGameId": null,
+    "CoverImageUrl": "/images/TheDivision.jpg"
+  },
+  {
+    "GameId": 75,
+    "GameName": "Warlords of New York",
+    "GameDescription": "DLC for The Division 2",
+    "MainGameId": 74,
+    "CoverImageUrl": "/images/WarlordsofNew York.jpg"
+  },
+  {
+    "GameId": 76,
+    "GameName": "Tom Clancy's Ghost Recon Wildlands",
+    "GameDescription": "An open-world tactical shooter by Ubisoft",
+    "MainGameId": null,
+    "CoverImageUrl": "/images/GhostRecon.jpg"
+  },
+  {
+    "GameId": 77,
+    "GameName": "Narco Road",
+    "GameDescription": "DLC for Tom Clancy's Ghost Recon Wildlands",
+    "MainGameId": 76,
+    "CoverImageUrl": "/images/NarcoRoad.jpg"
+  },
+  {
+    "GameId": 78,
+    "GameName": "Far Cry Primal",
+    "GameDescription": "An open-world FPS by Ubisoft",
+    "MainGameId": null,
+    "CoverImageUrl": "/images/FarCryPrimal.jpg"
+  },
+  {
+    "GameId": 79,
+    "GameName": "The Visionary",
+    "GameDescription": "DLC for Far Cry Primal",
+    "MainGameId": 78,
+    "CoverImageUrl": "/images/FarCryPrimal.jpg"
+  },
+  {
+    "GameId": 80,
+    "GameName": "Saints Row IV",
+    "GameDescription": "An open-world action game by Volition",
+    "MainGameId": null,
+    "CoverImageUrl": "/images/SaintsRow.jpg"
+  },
+
+
+
+
+
+  {
+    "GameId": 81,
+    "GameName": "Gat Out of Hell",
+    "GameDescription": "DLC for Saints Row IV",
+    "MainGameId": 80,
+    "CoverImageUrl": "/images/GatOutofHell.jpg"
+  },
+  {
+    "GameId": 82,
+    "GameName": "Just Cause 3",
+    "GameDescription": "An open-world action game by Avalanche Studios",
+    "MainGameId": null,
+    "CoverImageUrl": "/images/JustCause3.jpg"
+  },
+  {
+    "GameId": 83,
+    "GameName": "Sky Fortress",
+    "GameDescription": "DLC for Just Cause 3",
+    "MainGameId": 82,
+    "CoverImageUrl": "/images/SkyFortress.jpg"
+  },
+  {
+    "GameId": 84,
+    "GameName": "Battlefield V",
+    "GameDescription": "A first-person shooter by EA",
+    "MainGameId": null,
+    "CoverImageUrl": "/images/Battlefield5.jpg"
+  },
+  {
+    "GameId": 85,
+    "GameName": "Chapter 5: War in the Pacific",
+    "GameDescription": "DLC for Battlefield V",
+    "MainGameId": 84,
+    "CoverImageUrl": "/images/WarthePacific.jpg"
+  },
+  {
+    "GameId": 86,
+    "GameName": "Overwatch 2",
+    "GameDescription": "A first-person shooter by Blizzard",
+    "MainGameId": null,
+    "CoverImageUrl": "/images/Overwatch2.jpg"
+  },
+  {
+    "GameId": 87,
+    "GameName": "Seasonal Events",
+    "GameDescription": "DLC for Overwatch 2",
+    "MainGameId": 86,
+    "CoverImageUrl": "/images/Overwatch2.jpg"
+  },
+  {
+    "GameId": 88,
+    "GameName": "Star Wars Jedi: Survivor",
+    "GameDescription": "A Star Wars action-adventure game by Respawn Entertainment",
+    "MainGameId": null,
+    "CoverImageUrl": "/images/StarWarsJediSurvivor.jpg"
+  },
+  {
+    "GameId": 89,
+    "GameName": "The High Republic",
+    "GameDescription": "DLC for Star Wars Jedi: Survivor",
+    "MainGameId": 88,
+    "CoverImageUrl": "/images/TheHighRepublic.jpg"
+  },
+  {
+    "GameId": 90,
+    "GameName": "CyberConnect2",
+    "GameDescription": "A combat-focused RPG by CyberConnect2",
+    "MainGameId": null,
+    "CoverImageUrl": "/images/CyberConnect2.jpg"
+  },
+  {
+    "GameId": 91,
+    "GameName": "Naruto Shippuden: Ultimate Ninja Storm 4",
+    "GameDescription": "A fighting game by CyberConnect2",
+    "MainGameId": null,
+    "CoverImageUrl": "/images/NarutoShippuden.jpg"
+  },
+  {
+    "GameId": 92,
+    "GameName": "Season Pass",
+    "GameDescription": "DLC for Naruto Shippuden: Ultimate Ninja Storm 4",
+    "MainGameId": 91,
+    "CoverImageUrl": "/images/SeasonPass.jpg"
+  },
+  {
+    "GameId": 93,
+    "GameName": "Tomb Raider (2013)",
+    "GameDescription": "A reboot of the action-adventure series by Crystal Dynamics",
+    "MainGameId": null,
+    "CoverImageUrl": "/images/TombRaider(2013).jpg"
+  },
+  {
+    "GameId": 94,
+    "GameName": "The Tomb of the Lost Adventurer",
+    "GameDescription": "DLC for Tomb Raider (2013)",
+    "MainGameId": 93,
+    "CoverImageUrl": "/images/TombRaider(2013).jpg"
+  },
+  {
+    "GameId": 95,
+    "GameName": "Resident Evil 7",
+    "GameDescription": "A survival horror game by Capcom",
+    "MainGameId": null,
+    "CoverImageUrl": "/images/ResidentEvil7.jpg"
+  },
+  {
+    "GameId": 96,
+    "GameName": "Banned Footage Vol. 1",
+    "GameDescription": "DLC for Resident Evil 7",
+    "MainGameId": 95,
+    "CoverImageUrl": "/images/BannedFootage.jpg"
+  },
+  {
+    "GameId": 99,
+    "GameName": "Dark Souls III",
+    "GameDescription": "An action RPG by FromSoftware",
+    "MainGameId": null,
+    "CoverImageUrl": "/images/DarkSouls.jpg"
+  },
+  {
+    "GameId": 100,
+    "GameName": "The Ringed City",
+    "GameDescription": "DLC for Dark Souls III",
+    "MainGameId": 99,
+    "CoverImageUrl": "/images/TheRingedCity.jpg"
+  }
+]

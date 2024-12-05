@@ -718,3 +718,51 @@ tr:hover {
     font-size: 14px;
     color: #6c757d;
 }
+game-card {
+    height: 500px; /* Altezza fissa per tutte le card */
+}
+
+.game-card .card-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.game-card .card-actions {
+    margin-top: auto; /* Sposta i pulsanti in fondo alla card */
+}
+
+.game-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+}
+
+.game-details {
+    margin-top: 15px;
+    background-color: #f8f9fa;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.detail-item {
+    margin-bottom: 5px;
+}
+
+.card-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-start;
+}
+
+.cover-image {
+    width: 100%;
+    height: 300px; /* Aumenta l'altezza dell'immagine */
+    object-fit: cover; /* Ritaglia l'immagine mantenendo le proporzioni */
+}
+
+.game-card .card-img-top {
+    height: 300px; /* Aumenta l'altezza per l'immagine della card */
+    object-fit: cover; /* Assicura che l'immagine copra completamente l'area */
+}
+
+
+
