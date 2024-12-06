@@ -62,7 +62,7 @@ if (gameName) {
     gameModal.show();
 }
 
-// Mostra il modal di aggiunta gioco se l'URL contiene l'anchor specifico
+// Mostra il modal di aggiunta gioco 
 document.addEventListener("DOMContentLoaded", function () {
     if (window.location.hash === '#addGameModal') {
         var addGameModal = new bootstrap.Modal(document.getElementById('addGameModal'));

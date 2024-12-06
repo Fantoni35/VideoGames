@@ -24,6 +24,7 @@ namespace GamesDataAccess
             modelBuilder.Entity<Game>().Property(g => g.GameName).IsRequired();
             modelBuilder.Entity<Game>().Property(g => g.GameDescription).IsRequired();
 
+
             modelBuilder.Entity<Stores>().HasKey(s => s.StoreId);
             modelBuilder.Entity<Platforms>().HasKey(p => p.PlatformId);
 

@@ -1,5 +1,7 @@
-﻿using GamesDataAccess;
+﻿
+using GamesDataAccess;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using VideogamesWebApp.Models;
 
 
@@ -158,6 +160,7 @@ public class GamesController : Controller
                 DLCCount = _dbContext.Games.Count(dlc => dlc.MainGameId == game.GameId),
                 IsImported = game.IsImported,
                 CoverImageUrl = game.CoverImageUrl
+
 
             });
 
@@ -333,14 +336,12 @@ public class GamesController : Controller
     {
         if (!string.IsNullOrWhiteSpace(gameName) && !string.IsNullOrWhiteSpace(gameDescription))
         {
-            var existingGame = _dbContext.Games
-                .FirstOrDefault(g => g.GameName.ToLower() == gameName.ToLower() &&
-                                     g.GameDescription.ToLower() == gameDescription.ToLower() &&
-                                     g.MainGameId == mainGameId);
+            var existingGame = await _dbContext.Games
+            .FirstOrDefaultAsync(g => g.GameName.ToLower() == gameName.ToLower());
 
             if (existingGame != null)
             {
-                TempData["ErrorMessage"] = "A game with the same name, description already exists. Enter different details.";
+                TempData["ErrorMessage"] = "A game with the same name. Enter different game.";
                 return RedirectToAction("ViewAllGames", new { sortOrder = "alphabetical" });
             }
 
@@ -349,7 +350,8 @@ public class GamesController : Controller
                 GameName = gameName,
                 GameDescription = gameDescription,
                 MainGameId = mainGameId,
-                IsImported = false // Imposta IsImported a false per i giochi aggiunti dall'utente
+                IsImported = false, // Imposta IsImported a false per i giochi aggiunti dall'utente
+                CoverImageUrl = "/images/utenteStock.png"
 
 
             };

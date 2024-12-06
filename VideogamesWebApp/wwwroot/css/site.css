@@ -433,22 +433,22 @@ tr:hover {
 
 /*tasto delete*/
 .btn-delete {
-    background-color: #dc3545; /* Rosso */
+    background-color: #dc3545; 
     color: white;
     border: none;
     border-radius: 5px;
-    padding: 8px 12px; /* Aumenta il padding */
+    padding: 8px 12px; 
     font-weight: bold;
     transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
     .btn-delete i {
-        margin-right: 5px; /* Spazio tra l'icona e il testo */
+        margin-right: 5px; 
     }
 
     .btn-delete:hover {
-        background-color: #c82333; /* Colore più scuro al passaggio del mouse */
-        transform: translateY(-2px); /* Leggera elevazione al passaggio del mouse */
+        background-color: #c82333; 
+        transform: translateY(-2px); 
     }
 
 /* Contenitore dei toast */
@@ -719,7 +719,7 @@ tr:hover {
     color: #6c757d;
 }
 game-card {
-    height: 500px; /* Altezza fissa per tutte le card */
+    height: 500px; 
 }
 
 .game-card .card-body {
@@ -728,7 +728,7 @@ game-card {
 }
 
 .game-card .card-actions {
-    margin-top: auto; /* Sposta i pulsanti in fondo alla card */
+    margin-top: auto; 
 }
 
 .game-card:hover {
@@ -755,13 +755,13 @@ game-card {
 
 .cover-image {
     width: 100%;
-    height: 300px; /* Aumenta l'altezza dell'immagine */
-    object-fit: cover; /* Ritaglia l'immagine mantenendo le proporzioni */
+    height: 300px; 
+    object-fit: cover; 
 }
 
 .game-card .card-img-top {
-    height: 300px; /* Aumenta l'altezza per l'immagine della card */
-    object-fit: cover; /* Assicura che l'immagine copra completamente l'area */
+    height: 300px; 
+    object-fit: cover; 
 }
 
 
