@@ -1,5 +1,4 @@
-﻿
-using GamesDataAccess;
+﻿using GamesDataAccess;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using VideogamesWebApp.Models;
@@ -21,7 +20,7 @@ public class GamesController : Controller
     {
         var userId = GetUserId(); // Metodo per ottenere l'ID dell'utente
         var username = GetUsername(); // Metodo per ottenere il nome utente
-        int pageSize = 4;
+        int pageSize = 5;
 
         // Recupera l'utente per ottenere anche l'immagine del profilo
         var user = _dbContext.Users.SingleOrDefault(u => u.UserId == userId);
@@ -55,7 +54,8 @@ public class GamesController : Controller
                                     PlatformName = platform.PlatformName,
                                     LauncherName = launcher.LauncherName,
                                     MainGameId = game.MainGameId,
-                                    MainGameName = mainGame != null ? mainGame.GameName : null
+                                    MainGameName = mainGame != null ? mainGame.GameName : null,
+                                    CoverImageUrl = game.CoverImageUrl
                                 };
 
         // Filtro di ricerca, se presente
@@ -167,13 +167,13 @@ public class GamesController : Controller
         // Apply sorting based on the selected sort order
         allGamesQuery = sortOrder switch
         {
-            "GameNameAsc" => allGamesQuery.OrderBy(game => game.GameName),
-            "GameNameDesc" => allGamesQuery.OrderByDescending(game => game.GameName),
+            "GameNameAsc" => allGamesQuery.OrderBy(game => game.GameName.ToLower()),
+            "GameNameDesc" => allGamesQuery.OrderByDescending(game => game.GameName.ToLower()),
             "GameDescriptionAsc" => allGamesQuery.OrderBy(game => game.GameDescription),
             "GameDescriptionDesc" => allGamesQuery.OrderByDescending(game => game.GameDescription),
             "DLCCountAsc" => allGamesQuery.OrderBy(game => game.DLCCount),
             "DLCCountDesc" => allGamesQuery.OrderByDescending(game => game.DLCCount),
-            _ => allGamesQuery.OrderBy(game => game.GameName) // Default alphabetical order
+            _ => allGamesQuery.OrderBy(game => game.GameName.ToLower()) // Default alphabetical order
         };
 
         var mainGames = _dbContext.Games
@@ -337,7 +337,7 @@ public class GamesController : Controller
         if (!string.IsNullOrWhiteSpace(gameName) && !string.IsNullOrWhiteSpace(gameDescription))
         {
             var existingGame = await _dbContext.Games
-            .FirstOrDefaultAsync(g => g.GameName.ToLower() == gameName.ToLower());
+            .FirstOrDefaultAsync(g => EF.Functions.Like(g.GameName, gameName));
 
             if (existingGame != null)
             {
@@ -351,7 +351,7 @@ public class GamesController : Controller
                 GameDescription = gameDescription,
                 MainGameId = mainGameId,
                 IsImported = false, // Imposta IsImported a false per i giochi aggiunti dall'utente
-                CoverImageUrl = "/images/utenteStock.png"
+                CoverImageUrl = "/images/controller.jpg"
 
 
             };

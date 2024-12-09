@@ -544,10 +544,10 @@
   },
   {
     "GameId": 73,
-    "GameName": "Lost Legacy",
-    "GameDescription": "DLC for Uncharted 4: A Thief's End",
-    "MainGameId": 72,
-    "CoverImageUrl": "/images/cover/Uncharted.jpg"
+    "GameName": "Rocket League",
+    "GameDescription": "Car ball game",
+    "MainGameId": null,
+    "CoverImageUrl": "/images/cover/rocket.jpg"
   },
   {
     "GameId": 74,

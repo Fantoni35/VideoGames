@@ -507,8 +507,8 @@ function openBuyGameModalWithLauncher(launcherName, launcherId) {
 
 // Aggiorna il campo dello store nel modale di acquisto.
 function updateStoreField(data) {
-    document.getElementById('storeSearch').value = data.storeName; // Imposta il nome dello store.
-    document.getElementById('storeId').value = data.storeId; // Imposta l'ID dello store.
+    document.getElementById('storeSearch').value = data.storeName; 
+    document.getElementById('storeId').value = data.storeId; 
     storeSelected.value = true;
     showError(storeSearch, document.getElementById('storeSearchError'), true); // Rimuove eventuali errori.
 }
@@ -535,9 +535,9 @@ function updateLauncherField(data) {
 
 // Configura l'invio dei moduli per aggiungere store, piattaforme e launcher.
 document.addEventListener('DOMContentLoaded', function () {
-    handleFormSubmit('addStoreForm', '/Games/AddStore', updateStoreField); // Aggiungi store.
-    handleFormSubmit('addPlatformForm', '/Games/AddPlatform', updatePlatformField); // Aggiungi piattaforma.
-    handleFormSubmit('addLauncherForm', '/Games/AddLauncher', updateLauncherField); // Aggiungi launcher.
+    handleFormSubmit('addStoreForm', '/Games/AddStore', updateStoreField); 
+    handleFormSubmit('addPlatformForm', '/Games/AddPlatform', updatePlatformField); 
+    handleFormSubmit('addLauncherForm', '/Games/AddLauncher', updateLauncherField); 
 });
 
 // Resetta i campi quando il modale di acquisto viene chiuso.

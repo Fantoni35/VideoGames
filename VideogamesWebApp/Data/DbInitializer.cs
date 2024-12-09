@@ -152,7 +152,7 @@ public static class DbInitializer
             // Imposta un valore predefinito per CoverImageUrl se è NULL
             if (string.IsNullOrEmpty(game.CoverImageUrl))
             {
-                game.CoverImageUrl = "/images/utenteStock.png"; // Imposta un'immagine predefinita
+                game.CoverImageUrl = "/images/controller.jpg"; // Imposta un'immagine predefinita
             }
         }
 

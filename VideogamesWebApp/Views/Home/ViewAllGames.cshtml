@@ -4,6 +4,15 @@
 <div class="container mt-4">
     <h1 class="text-center text-primary mb-4">All Games</h1>
 
+    <div class="sorting-buttons mb-4 text-center">
+        <h5>Sort By:</h5>
+        <button class="btn btn-outline-primary" onclick="window.location.href='@Url.Action("ViewAllGames", new { pageNumber = ViewData["CurrentPage"], sortOrder = "GameNameAsc" })'">Game Name Asc</button>
+        <button class="btn btn-outline-primary" onclick="window.location.href='@Url.Action("ViewAllGames", new { pageNumber = ViewData["CurrentPage"], sortOrder = "GameNameDesc" })'">Game Name Desc</button>
+        <button class="btn btn-outline-primary" onclick="window.location.href='@Url.Action("ViewAllGames", new { pageNumber = ViewData["CurrentPage"], sortOrder = "DLCCountAsc" })'">DLC Count Asc</button>
+        <button class="btn btn-outline-primary" onclick="window.location.href='@Url.Action("ViewAllGames", new { pageNumber = ViewData["CurrentPage"], sortOrder = "DLCCountDesc" })'">DLC Count Desc</button>
+    </div>
+
+
     <div class="action-buttons">
         <button onclick="window.location.href='@Url.Action("Index", "Games")'" class="btn btn-outline-secondary">
             <i class="fas fa-arrow-left"></i> Back to Library
@@ -50,7 +59,7 @@
                                 }
                                 else
                                 {
-                                    <span>-</span>
+                                     <span class="badge bg-primary">@game.DLCCount</span>
                                 }
                             </div>
                         </div>

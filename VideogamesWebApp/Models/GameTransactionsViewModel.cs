@@ -17,5 +17,6 @@ public class GameTransactionsViewModel
     public int? MainGameId { get; set; }
 
     public string MainGameName { get; set; }
+    public string CoverImageUrl { get; set; }
 
 }

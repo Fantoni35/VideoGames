@@ -764,5 +764,22 @@ game-card {
     object-fit: cover; 
 }
 
+.img-thumbnail {
+    width: 100%;
+    height: auto;
+    border: 2px dashed #007bff;
+    border-radius: 8px;
+    transition: border-color 0.3s ease;
+}
+
+    .img-thumbnail:hover {
+        border-color: #0056b3;
+    }
+
+
+
+
+
+
 
 
