@@ -1,4 +1,16 @@
-﻿// Al caricamento del DOM, gestisce la visualizzazione temporizzata dei messaggi di successo ed errore
+﻿
+document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById('applySort').addEventListener('click', function () {
+        const selectedSortOrder = document.querySelector('input[name="sortOrder"]:checked').value;
+        const currentPage = window.currentPage;
+        const sortActionUrl = window.sortActionUrl;
+
+        window.location.href = `${sortActionUrl}?pageNumber=${currentPage}&sortOrder=${selectedSortOrder}`;
+    });
+});
+
+
+// Al caricamento del DOM, gestisce la visualizzazione temporizzata dei messaggi di successo ed errore
 document.addEventListener("DOMContentLoaded", function () {
     // Nasconde i messaggi di successo dopo 3 secondi
     const successMessage = document.querySelector(".alert-success");

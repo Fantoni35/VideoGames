@@ -1,17 +1,11 @@
 ﻿@model List<VideogamesWebApp.Models.GameViewModel>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+
+
 <div class="container mt-4">
     <h1 class="text-center text-primary mb-4">All Games</h1>
-
-    <div class="sorting-buttons mb-4 text-center">
-        <h5>Sort By:</h5>
-        <button class="btn btn-outline-primary" onclick="window.location.href='@Url.Action("ViewAllGames", new { pageNumber = ViewData["CurrentPage"], sortOrder = "GameNameAsc" })'">Game Name Asc</button>
-        <button class="btn btn-outline-primary" onclick="window.location.href='@Url.Action("ViewAllGames", new { pageNumber = ViewData["CurrentPage"], sortOrder = "GameNameDesc" })'">Game Name Desc</button>
-        <button class="btn btn-outline-primary" onclick="window.location.href='@Url.Action("ViewAllGames", new { pageNumber = ViewData["CurrentPage"], sortOrder = "DLCCountAsc" })'">DLC Count Asc</button>
-        <button class="btn btn-outline-primary" onclick="window.location.href='@Url.Action("ViewAllGames", new { pageNumber = ViewData["CurrentPage"], sortOrder = "DLCCountDesc" })'">DLC Count Desc</button>
-    </div>
-
 
     <div class="action-buttons">
         <button onclick="window.location.href='@Url.Action("Index", "Games")'" class="btn btn-outline-secondary">
@@ -20,6 +14,10 @@
         <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addGameModal">
             <i class="fas fa-plus"></i> Add New Game
         </button>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#sortModal">
+            <i class="bi bi-sort-down"></i> <!-- Icon for sorting -->
+        </button>
+
     </div>
 
     @if (TempData["ErrorMessage"] != null)
@@ -181,6 +179,51 @@
         </ul>
     </nav>
 
+    <div class="modal fade" id="sortModal" tabindex="-1" aria-labelledby="sortModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="sortModalLabel">Sort Games</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="sortForm">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="sortOrder" id="sortAZ" value="GameNameAsc" checked>
+                            <label class="form-check-label" for="sortAZ">
+                                Name (A-Z)
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="sortOrder" id="sortZA" value="GameNameDesc">
+                            <label class="form-check-label" for="sortZA">
+                                Name (Z-A)
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="sortOrder" id="sortDLCAsc" value="DLCCountAsc">
+                            <label class="form-check-label" for="sortDLCAsc">
+                                DLC Count (Ascending)
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="sortOrder" id="sortDLCDesc" value="DLCCountDesc">
+                            <label class="form-check-label" for="sortDLCDesc">
+                                DLC Count (Descending)
+                            </label>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="applySort">Apply</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
     <!-- Modal for Adding New Game -->
     <div class="modal fade" id="addGameModal" tabindex="-1" aria-labelledby="addGameModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -246,6 +289,12 @@
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    window.currentPage = @ViewData["CurrentPage"];
+    window.sortActionUrl = '@Url.Action("ViewAllGames", "Games")';
+</script>
+
 
 <script src="~/js/ViewAllGames.js"></script>
 

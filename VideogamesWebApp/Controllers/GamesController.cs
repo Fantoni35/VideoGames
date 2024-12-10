@@ -143,10 +143,10 @@ public class GamesController : Controller
         int pageSize = 5;
         var username = GetUsername();
 
-        // Ensure the games are initialized (if not already in the database)
+        // 
         if (!_dbContext.Games.Any())
         {
-            DbInitializer.Initialize(_dbContext); // Initialize games from the JSON file if the database is empty
+            DbInitializer.Initialize(_dbContext);
         }
 
         IQueryable<GameViewModel> allGamesQuery = _dbContext.Games
@@ -160,11 +160,9 @@ public class GamesController : Controller
                 DLCCount = _dbContext.Games.Count(dlc => dlc.MainGameId == game.GameId),
                 IsImported = game.IsImported,
                 CoverImageUrl = game.CoverImageUrl
-
-
             });
 
-        // Apply sorting based on the selected sort order
+
         allGamesQuery = sortOrder switch
         {
             "GameNameAsc" => allGamesQuery.OrderBy(game => game.GameName.ToLower()),
@@ -173,7 +171,7 @@ public class GamesController : Controller
             "GameDescriptionDesc" => allGamesQuery.OrderByDescending(game => game.GameDescription),
             "DLCCountAsc" => allGamesQuery.OrderBy(game => game.DLCCount),
             "DLCCountDesc" => allGamesQuery.OrderByDescending(game => game.DLCCount),
-            _ => allGamesQuery.OrderBy(game => game.GameName.ToLower()) // Default alphabetical order
+            _ => allGamesQuery.OrderBy(game => game.GameName.ToLower()) // Ordine alfabetico di default
         };
 
         var mainGames = _dbContext.Games
@@ -352,7 +350,6 @@ public class GamesController : Controller
                 MainGameId = mainGameId,
                 IsImported = false, // Imposta IsImported a false per i giochi aggiunti dall'utente
                 CoverImageUrl = "/images/controller.jpg"
-
 
             };
             _dbContext.Games.Add(game);
@@ -594,6 +591,7 @@ public class GamesController : Controller
 
         return Json(launchers);
     }
+
     [HttpGet]
     public IActionResult GetDLCs(int mainGameId, int page = 1, int pageSize = 5)
     {
@@ -633,7 +631,6 @@ public class GamesController : Controller
 
         return Json(result);
     }
-
 
     public IActionResult GetAllPlatforms(int page = 1, int pageSize = 5)
     {

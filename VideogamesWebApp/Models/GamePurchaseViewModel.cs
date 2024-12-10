@@ -12,7 +12,7 @@
         public bool IsVirtual { get; set; }
         public string Notes { get; set; } 
         public string? MainGameId { get; set; }
-        public List<int> DlcIds { get; set; } = new List<int>(); // New field for selected DLCs
+        public List<int> DlcIds { get; set; } = new List<int>(); 
 
     }
 
