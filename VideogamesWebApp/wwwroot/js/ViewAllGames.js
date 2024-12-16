@@ -115,10 +115,8 @@ function loadDLCs(mainGameId, gameName, page = 1) {
                 result.dlcs.forEach(dlc => {
                     const listItem = document.createElement("li");
                     listItem.className = "list-group-item";
-                    listItem.innerHTML = `
-                        <i class="fas fa-gamepad me-2 text-primary"></i>
-                        <strong>${dlc.gameName}</strong>
-                    `;
+                    listItem.innerHTML = `<i class="fas fa-gamepad me-2 text-primary"></i>
+                        <strong>${dlc.gameName}</strong>`;
                     dlcListElement.appendChild(listItem);
                 });
 

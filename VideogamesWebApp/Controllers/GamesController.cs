@@ -13,9 +13,6 @@ public class GamesController : Controller
         _dbContext = dbContext;
     }
 
-
-
-
     public IActionResult Index(string searchQuery, int pageNumber = 1)
     {
         var userId = GetUserId(); // Metodo per ottenere l'ID dell'utente
@@ -29,8 +26,6 @@ public class GamesController : Controller
         {
             return RedirectToAction("Login", "Account");
         }
-
-
 
         // Recupera la lista delle transazioni del gioco
         var transactionsQuery = from transaction in _dbContext.GameTransactions
@@ -103,10 +98,6 @@ public class GamesController : Controller
         return View("~/Views/Home/Index.cshtml", transactions);
     }
 
-
-
-
-
     [HttpPost]
     public IActionResult BuyGame(GamePurchaseViewModel model)
     {
@@ -143,7 +134,6 @@ public class GamesController : Controller
         int pageSize = 5;
         var username = GetUsername();
 
-        // 
         if (!_dbContext.Games.Any())
         {
             DbInitializer.Initialize(_dbContext);
@@ -161,7 +151,6 @@ public class GamesController : Controller
                 IsImported = game.IsImported,
                 CoverImageUrl = game.CoverImageUrl
             });
-
 
         allGamesQuery = sortOrder switch
         {
@@ -223,7 +212,7 @@ public class GamesController : Controller
         if (launcherId.HasValue)
             filteredTransactionsQuery = filteredTransactionsQuery.Where(t => t.LauncherId == launcherId.Value);
 
-
+        
         // Aggiorna le statistiche come prima
         var totalSpent = filteredTransactionsQuery.Sum(t => t.Price);
         ViewData["TotalSpent"] = totalSpent;
@@ -241,8 +230,7 @@ public class GamesController : Controller
      ? Math.Round(filteredTransactionsQuery.Average(t => (double?)t.Price) ?? 0, 2)
      : 0;
 
-        ViewData["AveragePrice"] = averagePrice.ToString("F2"); // Format to two decimal places
-
+        ViewData["AveragePrice"] = averagePrice.ToString("F2"); // due decimali
         // Giorno con il maggior numero di acquisti
         var mostActiveDay = filteredTransactionsQuery
             .GroupBy(t => t.PurchaseDate)
@@ -262,7 +250,7 @@ public class GamesController : Controller
             : 0;
         ViewData["PercentageVirtual"] = $"{percentageVirtual}% ({totalVirtual} virtual games)";
 
-        //most expensive game
+        
         var mostExpensiveGame = filteredTransactionsQuery
     .Where(t => t.UserId == userId)
     .AsEnumerable()
@@ -286,7 +274,7 @@ public class GamesController : Controller
             ViewData["MostExpensiveGame"] = "No transactions.";
         }
 
-        // Last purchase
+        
         var lastPurchase = filteredTransactionsQuery
             .OrderByDescending(t => t.PurchaseDate)
             .Select(t => new { t.Game.GameName, t.PurchaseDate })
@@ -295,7 +283,7 @@ public class GamesController : Controller
             ? $"{lastPurchase.GameName} on {lastPurchase.PurchaseDate:dd/MM/yyyy}"
             : "No transactions.";
 
-        // Shopping by days of the week
+        
         var activeDaysOfWeek = filteredTransactionsQuery
             .GroupBy(t => t.PurchaseDate.DayOfWeek)
             .OrderByDescending(g => g.Count())
@@ -303,7 +291,7 @@ public class GamesController : Controller
             .ToList();
         ViewData["ActiveDaysOfWeek"] = activeDaysOfWeek;
 
-        // Shopping by month
+        
         var activeMonths = filteredTransactionsQuery
             .GroupBy(t => new { Year = t.PurchaseDate.Year, Month = t.PurchaseDate.Month })
             .Select(g => new
@@ -352,6 +340,7 @@ public class GamesController : Controller
                 CoverImageUrl = "/images/controller.jpg"
 
             };
+
             _dbContext.Games.Add(game);
             await _dbContext.SaveChangesAsync();
 
@@ -437,7 +426,6 @@ public class GamesController : Controller
                 message = "Platform added successfully!"
             });
         }
-
         return Json(new { success = false, message = "Platform name cannot be empty." });
     }
 
@@ -471,7 +459,6 @@ public class GamesController : Controller
                 message = "Launcher added successfully!"
             });
         }
-
         return Json(new { success = false, message = "Launcher name cannot be empty." });
     }
 
@@ -518,9 +505,6 @@ public class GamesController : Controller
         return RedirectToAction("ViewAllGames");
     }
 
-
-
-
     [HttpGet]
     public IActionResult SearchGames(string query)
     {
@@ -538,6 +522,7 @@ public class GamesController : Controller
 
         return Json(games);
     }
+
     [HttpGet]
     public IActionResult SearchStores(string query)
     {
@@ -684,7 +669,6 @@ public class GamesController : Controller
 
         return Json(new { isDuplicate });
     }
-
 
 }
 
