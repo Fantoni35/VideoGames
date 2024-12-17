@@ -2,15 +2,19 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using VideogamesWebApp.Models;
+using VideogamesWebApp.Services;
 
 
 public class GamesController : Controller
 {
     private readonly DatabaseContext _dbContext;
+    private readonly StatisticsService _statisticsService;
 
-    public GamesController(DatabaseContext dbContext)
+    public GamesController(DatabaseContext dbContext, StatisticsService statisticsService)
     {
         _dbContext = dbContext;
+        _statisticsService = statisticsService;
+        
     }
 
     public IActionResult Index(string searchQuery, int pageNumber = 1)
@@ -196,112 +200,20 @@ public class GamesController : Controller
         return View("~/Views/Home/ViewAllGames.cshtml", paginatedGames);
     }
 
-    public IActionResult ViewStats(int? storeId, int? platformId, int? launcherId)
+    public async Task<IActionResult> ViewStats(int? storeId, int? platformId, int? launcherId)
     {
-        var userId = GetUserId();
+        var userId = GetUserId(); // Funzione per ottenere l'ID dell'utente loggato
+        var stats = await _statisticsService.GetFilteredStatisticsAsync(userId, storeId, platformId, launcherId);
 
-        var filteredTransactionsQuery = _dbContext.GameTransactions
-            .Where(t => t.UserId == userId);
-
-        if (storeId.HasValue)
-            filteredTransactionsQuery = filteredTransactionsQuery.Where(t => t.StoreId == storeId.Value);
-
-        if (platformId.HasValue)
-            filteredTransactionsQuery = filteredTransactionsQuery.Where(t => t.PlatformId == platformId.Value);
-
-        if (launcherId.HasValue)
-            filteredTransactionsQuery = filteredTransactionsQuery.Where(t => t.LauncherId == launcherId.Value);
-
-        
-        // Aggiorna le statistiche come prima
-        var totalSpent = filteredTransactionsQuery.Sum(t => t.Price);
-        ViewData["TotalSpent"] = totalSpent;
-
-
-        // Giochi totali che ha l'utente
-        var totalGames = filteredTransactionsQuery
-            .Select(t => t.GameId)
-            .Distinct()
-            .Count();
-        ViewData["TotalGames"] = totalGames;
-
-        // Prezzo medio per ogni gioco
-        var averagePrice = filteredTransactionsQuery.Any()
-     ? Math.Round(filteredTransactionsQuery.Average(t => (double?)t.Price) ?? 0, 2)
-     : 0;
-
-        ViewData["AveragePrice"] = averagePrice.ToString("F2"); // due decimali
-        // Giorno con il maggior numero di acquisti
-        var mostActiveDay = filteredTransactionsQuery
-            .GroupBy(t => t.PurchaseDate)
-            .OrderByDescending(g => g.Count())
-            .Select(g => new { Date = g.Key, Count = g.Count() })
-            .FirstOrDefault();
-        ViewData["MostActiveDay"] = mostActiveDay != null
-            ? $"{mostActiveDay.Date:dd/MM/yyyy} ({mostActiveDay.Count} shopping)"
-            : "No transactions.";
-
-        // Percentuale di giochi virtuali
-        var totalVirtual = filteredTransactionsQuery
-            .Count(t => t.IsVirtual);
-        var totalTransactions = filteredTransactionsQuery.Count();
-        var percentageVirtual = totalTransactions > 0
-            ? Math.Ceiling((double)totalVirtual / totalTransactions * 100)
-            : 0;
-        ViewData["PercentageVirtual"] = $"{percentageVirtual}% ({totalVirtual} virtual games)";
-
-        
-        var mostExpensiveGame = filteredTransactionsQuery
-    .Where(t => t.UserId == userId)
-    .AsEnumerable()
-    .OrderByDescending(t => t.Price)
-    .Select(t => new { t.GameId, t.Price })
-    .FirstOrDefault();
-
-        if (mostExpensiveGame != null)
-        {
-            var gameName = _dbContext.Games
-                .Where(g => g.GameId == mostExpensiveGame.GameId)
-                .Select(g => g.GameName)
-                .FirstOrDefault();
-
-            ViewData["MostExpensiveGame"] = gameName != null
-                ? $"{gameName} ({mostExpensiveGame.Price} €)"
-                : "Nessun gioco trovato.";
-        }
-        else
-        {
-            ViewData["MostExpensiveGame"] = "No transactions.";
-        }
-
-        
-        var lastPurchase = filteredTransactionsQuery
-            .OrderByDescending(t => t.PurchaseDate)
-            .Select(t => new { t.Game.GameName, t.PurchaseDate })
-            .FirstOrDefault();
-        ViewData["LastPurchase"] = lastPurchase != null
-            ? $"{lastPurchase.GameName} on {lastPurchase.PurchaseDate:dd/MM/yyyy}"
-            : "No transactions.";
-
-        
-        var activeDaysOfWeek = filteredTransactionsQuery
-            .GroupBy(t => t.PurchaseDate.DayOfWeek)
-            .OrderByDescending(g => g.Count())
-            .Select(g => new { Day = g.Key, Count = g.Count() })
-            .ToList();
-        ViewData["ActiveDaysOfWeek"] = activeDaysOfWeek;
-
-        
-        var activeMonths = filteredTransactionsQuery
-            .GroupBy(t => new { Year = t.PurchaseDate.Year, Month = t.PurchaseDate.Month })
-            .Select(g => new
-            {
-                Year = g.Key.Year,
-                Month = g.Key.Month,
-                Count = g.Count()
-            })
-            .ToList();
-        ViewData["ActiveMonths"] = activeMonths;
+        ViewData["TotalSpent"] = stats.TotalSpent;
+        ViewData["TotalGames"] = stats.TotalGames;
+        ViewData["AveragePrice"] = stats.AveragePrice.ToString("F2");
+        ViewData["MostActiveDay"] = stats.MostActiveDay;
+        ViewData["PercentageVirtual"] = stats.PercentageVirtual;
+        ViewData["MostExpensiveGame"] = stats.MostExpensiveGame;
+        ViewData["LastPurchase"] = stats.LastPurchase;
+        ViewData["ActiveDaysOfWeek"] = stats.ActiveDaysOfWeek;
+        ViewData["ActiveMonths"] = stats.ActiveMonths;
 
         return View("~/Views/Home/ViewStats.cshtml");
     }
@@ -671,5 +583,3 @@ public class GamesController : Controller
     }
 
 }
-
-
